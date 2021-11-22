@@ -3,7 +3,12 @@ package com.broadenway.ureasolution.domain;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import lombok.Getter;
+import lombok.ToString;
+
 @Entity
+@Getter
+@ToString
 public class GasStation {
 
 	// 주유소 코드
@@ -21,7 +26,7 @@ public class GasStation {
 
 	private String openingHours;
 
-	private String stocks;
+	private int stocks;
 
 	private String prices;
 	private String latitude;
@@ -32,7 +37,7 @@ public class GasStation {
 	}
 
 	public GasStation(String stationCode, String name, String address, String telNo, String openingHours,
-		String stocks, String prices, String latitude, String longitude, String lastModfeDttm) {
+		int stocks, String prices, String latitude, String longitude, String lastModfeDttm) {
 		this.stationCode = stationCode;
 		this.name = name;
 		this.address = address;
@@ -55,45 +60,5 @@ public class GasStation {
 		this.latitude = updateInfo.latitude;
 		this.longitude = updateInfo.longitude;
 		this.lastModfeDttm = updateInfo.lastModfeDttm;
-	}
-
-	public String getStationCode() {
-		return stationCode;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public String getTelNo() {
-		return telNo;
-	}
-
-	public String getOpeningHours() {
-		return openingHours;
-	}
-
-	public String getStocks() {
-		return stocks;
-	}
-
-	public String getPrices() {
-		return prices;
-	}
-
-	public String getLatitude() {
-		return latitude;
-	}
-
-	public String getLongitude() {
-		return longitude;
-	}
-
-	public String getLastModfeDttm() {
-		return lastModfeDttm;
 	}
 }
