@@ -1,4 +1,4 @@
-package com.broadenway.ureasolution.utils;
+package com.broadenway.utils;
 
 public enum ResponseFieldName {
 

@@ -1,9 +1,6 @@
-package com.broadenway.ureasolution.utils;
+package com.broadenway.utils;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,12 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.broadenway.ureasolution.domain.GasStation;
-import com.broadenway.ureasolution.repository.GasStationRepository;
-import com.broadenway.ureasolution.service.GasStationService;
-import com.broadenway.ureasolution.utils.ResponseFieldName;
-
-import lombok.RequiredArgsConstructor;
+import com.broadenway.utils.gasdomain.GasStation;
+import com.broadenway.utils.gasdomain.GasStationRepository;
 
 @Component
 public class StoreGasStationAPIService implements ApplicationRunner {
@@ -36,10 +29,10 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 	private String serviceKey;
 
 	@Autowired
-	private final GasStationService gasStationService;
+	private final GasStationRepository gasStationRepository;
 
-	public StoreGasStationAPIService(GasStationService gasStationService) {
-		this.gasStationService = gasStationService;
+	public StoreGasStationAPIService(GasStationRepository gasStationRepository) {
+		this.gasStationRepository = gasStationRepository;
 	}
 
 	@Override
@@ -52,13 +45,13 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 
 	private void storeDatabase(List<GasStation> gasStations) {
 		for(GasStation gasStation : gasStations){
-			Optional<GasStation> findGasStation = gasStationService.findGasStationByStationCode(
+			Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
 				gasStation.getStationCode());
 			if(findGasStation.isPresent()){
 				findGasStation.get().update(gasStation);
 				continue;
 			}
-			gasStationService.save(gasStation);
+			gasStationRepository.save(gasStation);
 		}
 	}
 
@@ -96,7 +89,7 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 					(String)data.get(ResponseFieldName.ADDRESS.getName()),
 					(String)data.get(ResponseFieldName.TEL_NO.getName()),
 					(String)data.get(ResponseFieldName.OPENNING_HOURS.getName()),
-					(Integer)data.get(ResponseFieldName.STOCSK.getName()),
+					String.valueOf(data.get(ResponseFieldName.STOCSK.getName())),
 					(String)data.get(ResponseFieldName.PRICE.getName()),
 					(String)data.get(ResponseFieldName.LATITUDE.getName()),
 					(String)data.get(ResponseFieldName.LONGITUDE.getName()),

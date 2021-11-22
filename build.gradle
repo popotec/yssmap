@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1-main'
 sourceCompatibility = '11'
 
 configurations {
@@ -30,9 +30,14 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 	runtimeOnly 'mysql:mysql-connector-java'
 }
 
 test {
 	useJUnitPlatform()
+}
+
+springBoot {
+	mainClass = "com.broadenway.ureasolution.UreasolutionApplication"
 }

@@ -1,4 +1,4 @@
-package com.broadenway.ureasolution.domain;
+package com.broadenway.utils.gasdomain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -1,5 +1,6 @@
 package com.broadenway.ureasolution.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -28,5 +29,9 @@ public class GasStationService {
 
 	public void update(GasStation gasStation) {
 
+	}
+
+	public List<GasStation> findAll() {
+		return gasStationRepository.findAll();
 	}
 }
