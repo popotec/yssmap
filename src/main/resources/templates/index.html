@@ -3,31 +3,19 @@
 
 <head>
     <title>주유소별 요소수 재고 현황</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-    <link href="/css/styles.css" rel="stylesheet" />
+      <div th:replace="./fragments/header.html :: fragment-header"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <body class="sb-nav-fixed">
 <div id="layoutSidenav">
-    <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-            <div class="sb-sidenav-menu">
-                <div class="nav">
-                    <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="/">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                        현황
-                    </a>
-                </div>
-            </div>
-        </nav>
-    </div>
+    <div th:replace="./fragments/sidebar.html :: fragment-sidebar"/>
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">주유소별 요소수 재고 현황</h1>
+                <h1>주유소별 요소수 재고 현황</h1>
+                <br />
+                <h5 align="right" th:text="'마지막 업데이트 : ' + ${gasStations[0].lastModfeDttm}"></h5>
                 <div class="card mb-4">
                     <div class="card-body">
                         <table id="datatablesSimple">

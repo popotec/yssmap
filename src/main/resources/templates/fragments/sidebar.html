@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body class="sb-nav-fixed">
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav" th:fragment="fragment-sidebar">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" href="/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        목록 조회
+                    </a>
+                    <a class="nav-link" href="/station-view">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        지도로 찾기
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" style="width: 100%;height: 100%">
+<head>
+    <title>요소수 맵</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7d3da1b07e90a4db7425503f70e966a6"></script>
+     <div th:replace="./fragments/header.html :: fragment-header"/>
+</head>
+<body class="sb-nav-fixed" style="width: 100%;height: 100%">
+<div id="layoutSidenav">
+    <div th:replace="./fragments/sidebar.html :: fragment-sidebar"/>
+    <div id="layoutSidenav_content" style="top: 0px">
+        <br>
+        <h4>요소수 재고 있는 주유소 현황</h4>
+        <br>
+            <div id="map" style="width: 100%;height:100%"></div>
+    </div>
+    <script th:inline="javascript">
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+    mapOption = {
+        center: new kakao.maps.LatLng(37.34028365706193, 126.95422051005987), // 지도의 중심좌표
+        level: 6 // 지도의 확대 레벨
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+        var stations =   [[${gasStations}]];
+    // 마커를 생성합니다
+    var markers =[];
+    var contents = [];
+    for(var station of stations){
+        if(station.stocks == 0){
+            continue;
+        }
+        var markerPosition  = new kakao.maps.LatLng(station.latitude, station.longitude);
+        markers.push(new kakao.maps.Marker({
+                 position: markerPosition
+             }));
+        contents.push('<div style="padding:5px;">'+ station.name +'<br/>' + station.address + '</div>');
+    }
+    for(var i=0; i<markers.length; i++){
+        const marker = markers[i];
+        const contendDiv = contents[i];
+        marker.setMap(map);
+        kakao.maps.event.addListener(marker, 'click', function() {
+             var infowindow = new kakao.maps.InfoWindow({
+                                removable: true,
+                                position: marker.position,
+                                content : contendDiv
+                            });
+
+              infowindow.open(map, this);
+         });
+    }
+
+
+
+
+
+
+
+
+
+
+
+<!--        kakao.maps.event.addListener(marker, 'click', function() {-->
+<!--              // 마커 위에 인포윈도우를 표시합니다-->
+<!--              infowindow.open(map, marker);-->
+<!--        });-->
+
+<!--    var stations =   [[${gasStations}]];-->
+
+<!--    for(var station of stations){-->
+<!--     var markerPosition  = new kakao.maps.LatLng(station.latitude, station.longitude);-->
+<!--        var marker =new kakao.maps.Marker({-->
+<!--                 position: markerPosition,-->
+<!--                 clickable: true-->
+<!--             });-->
+<!--        marker.setMap(map);-->
+<!--        var iwContent = '<div style="padding:5px;">'+ station.name +'<br />' + station.address + '</div>';-->
+<!--        var infowindow = new kakao.maps.InfoWindow({-->
+<!--                            removable: true,-->
+<!--                            content : iwContent-->
+<!--                        });-->
+<!--        kakao.maps.event.addListener(marker, 'click', function() {-->
+<!--              // 마커 위에 인포윈도우를 표시합니다-->
+<!--              infowindow.open(map, marker);-->
+<!--        });-->
+<!--    }-->
+
+    </script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

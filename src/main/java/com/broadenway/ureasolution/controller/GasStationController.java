@@ -30,4 +30,16 @@ public class GasStationController {
 		modelAndView.setViewName("index");
 		return modelAndView;
 	}
+
+	@RequestMapping("/station-view")
+	public ModelAndView getStationsView() {
+		List<GasStationDto> gasStationDatas = gasStationService.findAll()
+			.stream()
+			.map(GasStationDto::from)
+			.collect(Collectors.toList());
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("gasStations", gasStationDatas);
+		modelAndView.setViewName("stations-view");
+		return modelAndView;
+	}
 }

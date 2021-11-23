@@ -14,13 +14,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.broadenway.utils.gasdomain.GasStation;
 import com.broadenway.utils.gasdomain.GasStationRepository;
 
-@Component
+@Service
+@Transactional
 public class StoreGasStationAPIService implements ApplicationRunner {
 
 	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/15094782/v1/uddi:6b2017af-659d-437e-a549-c59788817675";
@@ -37,7 +39,6 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		System.out.println("start read data");
 		Map responseData = requestAPIData();
 		List<GasStation> gasStations = convertDataToGasStationEntity(responseData);
 		storeDatabase(gasStations);
@@ -82,6 +83,7 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 
 	private List<GasStation> convertDataToGasStationEntity(Map responseBody) {
 		List<Map> extractedData = (ArrayList)responseBody.get("data");
+
 		return extractedData.stream().map(data ->
 				new GasStation(
 					(String)data.get(ResponseFieldName.STATION_CODE.getName()),
