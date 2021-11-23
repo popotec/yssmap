@@ -235,7 +235,7 @@ sup {
 }
 
 a {
-  color: #0d6efd;
+  color: darkcyan;
   text-decoration: underline;
 }
 a:hover {
@@ -4819,7 +4819,7 @@ textarea.form-control-lg {
 .page-link, .dataTable-pagination a {
   position: relative;
   display: block;
-  color: #0d6efd;
+  color: darkcyan;
   text-decoration: none;
   background-color: #fff;
   border: 1px solid #dee2e6;
@@ -4850,8 +4850,8 @@ textarea.form-control-lg {
 .page-item.active .page-link, .page-item.active .dataTable-pagination a, .dataTable-pagination .page-item.active a, .dataTable-pagination li.active .page-link, .dataTable-pagination li.active a {
   z-index: 3;
   color: #fff;
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: darkcyan;
+  border-color: darkcyan;
 }
 .page-item.disabled .page-link, .page-item.disabled .dataTable-pagination a, .dataTable-pagination .page-item.disabled a, .dataTable-pagination li.disabled .page-link, .dataTable-pagination li.disabled a {
   color: #6c757d;

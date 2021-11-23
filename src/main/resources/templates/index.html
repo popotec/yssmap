@@ -32,25 +32,16 @@
                     <div class="card-body">
                         <table id="datatablesSimple">
                             <thead>
-                            <tr>
-                                <td>주유소명</td>
-                                <td>주소</td>
-                                <td>전화번호</td>
-                                <td>영업시간</td>
+                            <tr style="font-weight: bold;">
+                                <td>주유소 정보</td>
                                 <td>재고량</td>
-                                <td>가격</td>
-                                <td>데이터기준일시</td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="gasStation : ${gasStations}">
-                                <td th:text="${gasStation.name}"></td>
-                                <td th:text="${gasStation.address}"></td>
-                                <td th:text="${gasStation.telNo}"></td>
-                                <td th:text="${gasStation.openingHours}"></td>
-                                <td th:text="${gasStation.stocks}"></td>
-                                <td th:text="${gasStation.prices}"></td>
-                                <td th:text="${gasStation.lastModfeDttm}"></td>
+                                <td th:utext="${gasStation.name} + '<br/>'
+                                + '(주소)'+${gasStation.address}"></td>
+                                 <td th:text="${gasStation.stocks}"></td>
                             </tr>
                             </tbody>
                         </table>
