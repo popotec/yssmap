@@ -19,7 +19,7 @@ public class GasStationController {
 
 	private final GasStationService gasStationService;
 
-	@RequestMapping()
+	@RequestMapping("/station-list")
 	public ModelAndView getStations() {
 		List<GasStationDto> gasStationDatas = gasStationService.findAll()
 			.stream()
@@ -31,7 +31,7 @@ public class GasStationController {
 		return modelAndView;
 	}
 
-	@RequestMapping("/station-view")
+	@RequestMapping("/")
 	public ModelAndView getStationsView() {
 		List<GasStationDto> gasStationDatas = gasStationService.findAll()
 			.stream()

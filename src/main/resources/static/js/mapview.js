@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', event => {
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(stations[0].latitude, stations[0].longitude), // 지도의 중심좌표
-            level: 7 // 지도의 확대 레벨
+            level: 10 // 지도의 확대 레벨
         };
     map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
@@ -87,7 +87,9 @@ function initStations(includeNoStocks) {
 
     initMarkersAndInfos();
 
+    let j=0;
     for(var station of stations){
+    j++;
             if(!includeNoStocks && station.stocks==0){
                 continue;
             }
@@ -98,14 +100,15 @@ function initStations(includeNoStocks) {
             markers.push(marker);
 
             const info = new kakao.maps.InfoWindow({
-                                                     removable: false,
-                                                     position: marker.position,
-                                                     content : '<div class="info-title">'+
-                                                     '<span style="padding:5px;font-size:13px;">'+ station.name +'</span>'+
-                                                     '<span style="font-size:13px;font-weight:bold">'+'재고: '+station.stocks+'</span><br/>'+
-                                                     '<span style="padding:5px;font-size:12px;color:darkgray">' + station.address + '</span>'+
-                                                     '</div>'
-                                                 });
+                 removable: false,
+                 position: marker.position,
+                 content : '<div class="info-title">'+
+                 '<span style="padding:5px;font-size:13px;">'+ station.name +'</span>'+
+                 '<span style="font-size:13px;font-weight:bold">'+'(재고: '+station.stocks+'ℓ)&nbsp;&nbsp; '+
+                 '</span><span onclick="navi('+j+')"><i style="size:20px;" class="fas fa-directions"></i></span><br/>'+
+                 '<span style="padding:5px;font-size:12px;color:darkgray">' + station.address + '</span>'+
+                 '</div>'
+             });
             infos.push(info);
         }
 
@@ -121,3 +124,14 @@ function initStations(includeNoStocks) {
              });
         }
 }
+
+   function navi(stationId) {
+       Kakao.Navi.start({
+         name: stations[stationId].name,
+         x: Number(stations[stationId].longitude),
+         y: Number(stations[stationId].latitude),
+         coordType: 'wgs84'
+       })
+     }
+
+     Kakao.init('7d3da1b07e90a4db7425503f70e966a6');

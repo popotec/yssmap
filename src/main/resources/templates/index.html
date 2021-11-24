@@ -19,45 +19,34 @@
         <main>
             <div class="container-fluid px-4">
                 <br />
-                <h1>주유소별 요소수 재고 현황</h1>
-                <br />
+                <h5 style="font-weight: bold;color: cadetblue">주유소별 요소수 재고 현황</h5>
                 <h7 style="color: darkgray" th:text="'마지막 업데이트 시각 : ' + ${gasStations[0].lastModfeDttm}"></h7>
                 <br />
                 <h7 style="color: darkgray">(방문 전 전화 확인을 추천합니다.)</h7>
                 <div class="card mb-4">
                     <div class="card-body">
                         <table id="datatablesSimple">
-<!--                        <table id="boot-datatable" class="table table-striped table-bordered">-->
                             <thead>
-                            <tr style="font-weight: bold;">
-                                <td>번호</td>
+                            <tr class="table-row-head">
                                 <td>주유소 정보</td>
-                                <td>재고량</td>
+                                <td>재고(ℓ)</td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="gasStation : ${gasStations}">
-                                <td th:text="${gasStationStat.count}"></td>
-                                <td th:utext="${gasStation.name} + '<br/>'
-                                + '(주소)'+${gasStation.address} + '<br/>'
-                                + '(전화번호)'+${gasStation.telNo}"></td>
+                                <td th:utext="'<span class=table-row-title>'+ ${gasStation.name} +'</span><br/>'
+                                + '(주소) '+${gasStation.address} + '<br/>'
+                                + '(전화) '+${gasStation.telNo}"></td>
                                  <td th:text="${gasStation.stocks}"></td>
                             </tr>
                             </tbody>
                         </table>
+                        <h7 style="color: darkgray">현황은 매일 2회 업데이트 됩니다.(반영시간: 14시, 20시)</h7>
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="py-4 bg-light mt-auto">
-            <div class="container-fluid px-4">
-                <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">created by jerry
-                    <a href="https://jerry92k.tistory.com/">블로그 주소</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <footer th:replace="./fragments/footer.html :: fragment-footer"/>
     </div>
 </div>
 

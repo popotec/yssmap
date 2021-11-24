@@ -236,7 +236,7 @@ sup {
 
 a {
   color: darkcyan;
-  text-decoration: underline;
+  text-decoration: none;
 }
 a:hover {
   color: #0a58ca;
@@ -4492,7 +4492,7 @@ textarea.form-control-lg {
   color: cadetblue;
 }
 .navbar-dark .navbar-brand:hover, .navbar-dark .navbar-brand:focus {
-  color: #fff;
+  color: cadetblue;
 }
 .navbar-dark .navbar-nav .nav-link {
   color: rgba(255, 255, 255, 0.55);
@@ -11699,4 +11699,12 @@ body {
   width: 20px !important;
   font-size: 0.75rem;
   border-radius: 0.25rem !important;
+}
+.table-row-head{
+  font-weight: bold;
+  font-size: 16px;
+}
+.table-row-title{
+  font-weight: bold;
+  font-size: 16px;
 }

@@ -3,6 +3,7 @@
 <head>
     <title>요소수 맵</title>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7d3da1b07e90a4db7425503f70e966a6"></script>
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
      <div th:replace="./fragments/header.html :: fragment-header"/>
     <link href="/css/map.css" rel="stylesheet" />
 </head>
@@ -17,15 +18,19 @@
             <div class="custom_typecontrol">
                 <span id="btnToggleStocks" class="selected_btn" onclick="setMapType()">재고없음 제외</span>
             </div>
+            <div>
+                <a id="navi" href="#" onclick="navi();">
+                    <img
+                            src="https://developers.kakao.com/assets/img/about/buttons/navi/kakaonavi_btn_medium.png"
+                    />
+                </a>
+            </div>
         </div>
-<!--        <footer class="py-4 bg-light mt-auto">-->
-<!--            <div class="container-fluid px-4">-->
-<!--                <div class="d-flex align-items-center justify-content-between small">-->
-<!--                    <div class="text-muted">created by jerry-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </footer>-->
+        <div style="padding-left: 10px; padding-top:5px; font-weight: bold;color: cadetblue">
+            <h5>주유소별 요소수 재고 현황</h5>
+            <h7 style="color: darkgray" th:text="'마지막 업데이트 시각 : ' + ${gasStations[0].lastModfeDttm}+ ' (방문 전 전화 확인을 추천합니다.)'"></h7>
+        </div>
+        <footer th:replace="./fragments/footer.html :: fragment-footer"/>
     </div>
     <script th:inline="javascript">
     var stations =   [[${gasStations}]];

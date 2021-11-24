@@ -6,7 +6,7 @@ html, body {width:100%;height:100%;margin:0;padding:0;}
 .custom_typecontrol .unselected_btn {background:#fff;background:linear-gradient(#fff,  #e6e6e6); border: 1px solid darkgray;}
 .custom_typecontrol .unselected_btn:hover {background:#f5f5f5;background:linear-gradient(#f5f5f5,#e3e3e3);}
 .custom_typecontrol .unselected_btn:active {background:#e6e6e6;background:linear-gradient(#e6e6e6, #fff);}
-.custom_typecontrol .selected_btn {color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
+.custom_typecontrol .selected_btn {color:#fff;background:blueviolet;border: 2px solid darkgray;}
 .custom_typecontrol .selected_btn:hover {color:#fff;}
 .custom_zoomcontrol {position:absolute;top:50px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;background-color:#f5f5f5;}
 .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}
@@ -24,3 +24,4 @@ html, body {width:100%;height:100%;margin:0;padding:0;}
     width: max-content;
     min-width: 150px;
 }
+
