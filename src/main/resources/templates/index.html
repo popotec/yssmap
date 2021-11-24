@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="/js/datatables-simple-demo.js"></script>
     <div th:replace="./fragments/header.html :: fragment-header"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+
 </head>
 <body class="sb-nav-fixed">
 <div id="layoutSidenav">
@@ -21,7 +21,9 @@
                 <br />
                 <h1>주유소별 요소수 재고 현황</h1>
                 <br />
-                <h5 align="right" th:text="'마지막 업데이트 : ' + ${gasStations[0].lastModfeDttm}"></h5>
+                <h7 style="color: darkgray" th:text="'마지막 업데이트 시각 : ' + ${gasStations[0].lastModfeDttm}"></h7>
+                <br />
+                <h7 style="color: darkgray">(방문 전 전화 확인을 추천합니다.)</h7>
                 <div class="card mb-4">
                     <div class="card-body">
                         <table id="datatablesSimple">
@@ -37,7 +39,8 @@
                             <tr th:each="gasStation : ${gasStations}">
                                 <td th:text="${gasStationStat.count}"></td>
                                 <td th:utext="${gasStation.name} + '<br/>'
-                                + '(주소)'+${gasStation.address}"></td>
+                                + '(주소)'+${gasStation.address} + '<br/>'
+                                + '(전화번호)'+${gasStation.telNo}"></td>
                                  <td th:text="${gasStation.stocks}"></td>
                             </tr>
                             </tbody>
