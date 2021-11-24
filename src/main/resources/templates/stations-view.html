@@ -7,6 +7,7 @@
 </head>
 <body class="sb-nav-fixed" style="width: 100%;height: 100%">
 <div id="layoutSidenav">
+    <div th:replace="./fragments/sidebar.html :: fragment-nav"/>
     <div th:replace="./fragments/sidebar.html :: fragment-sidebar"/>
     <div id="layoutSidenav_content" style="top: 0px">
         <br>
@@ -50,42 +51,6 @@
               infowindow.open(map, this);
          });
     }
-
-
-
-
-
-
-
-
-
-
-
-<!--        kakao.maps.event.addListener(marker, 'click', function() {-->
-<!--              // 마커 위에 인포윈도우를 표시합니다-->
-<!--              infowindow.open(map, marker);-->
-<!--        });-->
-
-<!--    var stations =   [[${gasStations}]];-->
-
-<!--    for(var station of stations){-->
-<!--     var markerPosition  = new kakao.maps.LatLng(station.latitude, station.longitude);-->
-<!--        var marker =new kakao.maps.Marker({-->
-<!--                 position: markerPosition,-->
-<!--                 clickable: true-->
-<!--             });-->
-<!--        marker.setMap(map);-->
-<!--        var iwContent = '<div style="padding:5px;">'+ station.name +'<br />' + station.address + '</div>';-->
-<!--        var infowindow = new kakao.maps.InfoWindow({-->
-<!--                            removable: true,-->
-<!--                            content : iwContent-->
-<!--                        });-->
-<!--        kakao.maps.event.addListener(marker, 'click', function() {-->
-<!--              // 마커 위에 인포윈도우를 표시합니다-->
-<!--              infowindow.open(map, marker);-->
-<!--        });-->
-<!--    }-->
-
     </script>
 </div>
 

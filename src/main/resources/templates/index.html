@@ -3,30 +3,39 @@
 
 <head>
     <title>주유소별 요소수 재고 현황</title>
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-      <div th:replace="./fragments/header.html :: fragment-header"></div>
+     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="/js/datatables-simple-demo.js"></script>
+    <div th:replace="./fragments/header.html :: fragment-header"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <body class="sb-nav-fixed">
 <div id="layoutSidenav">
+
+    <div th:replace="./fragments/sidebar.html :: fragment-nav"/>
     <div th:replace="./fragments/sidebar.html :: fragment-sidebar"/>
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
+                <br />
                 <h1>주유소별 요소수 재고 현황</h1>
                 <br />
                 <h5 align="right" th:text="'마지막 업데이트 : ' + ${gasStations[0].lastModfeDttm}"></h5>
                 <div class="card mb-4">
                     <div class="card-body">
                         <table id="datatablesSimple">
+<!--                        <table id="boot-datatable" class="table table-striped table-bordered">-->
                             <thead>
                             <tr style="font-weight: bold;">
+                                <td>번호</td>
                                 <td>주유소 정보</td>
                                 <td>재고량</td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="gasStation : ${gasStations}">
+                                <td th:text="${gasStationStat.count}"></td>
                                 <td th:utext="${gasStation.name} + '<br/>'
                                 + '(주소)'+${gasStation.address}"></td>
                                  <td th:text="${gasStation.stocks}"></td>
@@ -48,9 +57,19 @@
         </footer>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple, {
+            perPage: 200,
+            perPageSelect: false,
+            layout:{
+                bottom:""
+            }
+        });
+    }
+</script>
 <script src="/js/scripts.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-<script src="/js/datatables-simple-demo.js"></script>
 </body>
 </html>
