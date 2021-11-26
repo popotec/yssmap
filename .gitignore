@@ -5,8 +5,12 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 src/main/resources/application.yml
+src/main/resources/static/robots.txt
+src/main/resources/static/rss.xml
+src/main/resources/static/sitemap.xml
+src/main/resources/static/naverc05cb51879cac415984174a7c67299e0.html
 src/main/resources/application-prod.yml
-
+src/test/resources/application.yml
 ### STS ###
 .apt_generated
 .classpath
