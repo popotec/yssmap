@@ -20,7 +20,7 @@
             <div class="container-fluid px-4">
                 <br />
                 <h5 style="font-weight: bold;color: cadetblue">주유소별 요소수 재고 현황</h5>
-                <h7 style="color: darkgray" th:text="'마지막 업데이트 시각 : ' + ${gasStations[0].lastModfeDttm}"></h7>
+                <h7 style="color: darkgray">준실시간 업데이트(10분 단위 갱신)</h7>
                 <br />
                 <h7 style="color: darkgray">(방문 전 전화 확인을 추천합니다.)</h7>
                 <div class="card mb-4">
@@ -36,12 +36,13 @@
                             <tr th:each="gasStation : ${gasStations}">
                                 <td th:utext="'<span class=table-row-title>'+ ${gasStation.name} +'</span><br/>'
                                 + '(주소) '+${gasStation.address} + '<br/>'
-                                + '(전화) '+${gasStation.telNo}"></td>
-                                 <td th:text="${gasStation.stocks}"></td>
+                                + '(전화) '+${gasStation.telNo} + '<br/>'
+                                + '(영업시간) '+${gasStation.openingHours}"></td>
+                                 <td th:utext="'<span style=font-weight:bold;color:cadetblue>'+${gasStation.stocks} +'</span><br/>'
+                                + '(₩'+${gasStation.prices}+'/ℓ)'"></td>
                             </tr>
                             </tbody>
                         </table>
-                        <h7 style="color: darkgray">현황은 매일 2회 업데이트 됩니다.(반영시간: 14시, 20시)</h7>
                     </div>
                 </div>
             </div>

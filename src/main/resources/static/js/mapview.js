@@ -103,9 +103,9 @@ function initStations(includeNoStocks) {
                  removable: false,
                  position: marker.position,
                  content : '<div class="info-title">'+
-                 '<span style="padding:5px;font-size:13px;">'+ station.name +'</span>'+
-                 '<span style="font-size:13px;font-weight:bold">'+'(재고: '+station.stocks+'ℓ)&nbsp;&nbsp; '+
-                 '</span><span onclick="navi('+j+')"><i style="size:20px;" class="fas fa-directions"></i></span><br/>'+
+                 '<span style="font-size:13px; font-weight: bold"> '+ station.name +'&nbsp;&nbsp;</span>'+
+                 '<span onclick="navi('+j+')"><i style="size:20px;" class="fas fa-directions"></i></span><br/>'+
+                 '<span style="font-size:13px;font-weight:bold">'+'재고: '+station.stocks+'ℓ &nbsp; (₩'+station.prices+'/ℓ) </span><br/>' +
                  '<span style="padding:5px;font-size:12px;color:darkgray">' + station.address + '</span>'+
                  '</div>'
              });

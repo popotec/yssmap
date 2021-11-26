@@ -25,7 +25,7 @@ import com.broadenway.utils.gasdomain.GasStationRepository;
 @Transactional
 public class StoreGasStationAPIService implements ApplicationRunner {
 
-	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/15094782/v1/uddi:6b2017af-659d-437e-a549-c59788817675";
+	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/uws/v1/inventory";
 
 	@Value("${dataportal.servicekey}")
 	private String serviceKey;
@@ -60,9 +60,6 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		String parameter = "?page=1&perPage=10&serviceKey=";
-		String url = BASE_REQUEST_URL+parameter+serviceKey;
-
 		System.out.println("servicekey");
 		System.out.println(serviceKey);
 
@@ -74,7 +71,7 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 		HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
 		String page="1";
-		String perPage="300";
+		String perPage="200";
 		String urlBuilder = BASE_REQUEST_URL+"?page="+page+"&perPage="+perPage+"&serviceKey="+serviceKey;
 
 		return restTemplate.exchange(urlBuilder, HttpMethod.GET, httpEntity, Map.class).getBody();

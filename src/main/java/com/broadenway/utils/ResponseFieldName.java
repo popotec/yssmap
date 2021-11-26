@@ -2,16 +2,16 @@ package com.broadenway.utils;
 
 public enum ResponseFieldName {
 
-	STATION_CODE("코드"),
-	ADDRESS("주소"),
-	TEL_NO("전화번호"),
-	STOCSK("재고량"),
-	LATITUDE("위도"),
-	LONGITUDE("경도"),
-	PRICE("가격"),
-	STD_DT("데이터기준일"),
-	NAME("명칭"),
-	OPENNING_HOURS("영업시간");
+	STATION_CODE("code"),
+	ADDRESS("addr"),
+	TEL_NO("tel"),
+	STOCSK("inventory"),
+	LATITUDE("lat"),
+	LONGITUDE("lng"),
+	PRICE("price"),
+	STD_DT("regDt"),
+	NAME("name"),
+	OPENNING_HOURS("openTime");
 
 	private String fieldName;
 
