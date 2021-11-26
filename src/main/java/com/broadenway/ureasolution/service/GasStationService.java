@@ -19,16 +19,12 @@ public class GasStationService {
 	private final GasStationRepository gasStationRepository;
 
 	public Optional<GasStation> findGasStationByStationCode(String stationCode){
-		return gasStationRepository.findByStationCode(stationCode);
+		return gasStationRepository.findById(stationCode);
 	}
 
 	@Transactional
 	public void save(GasStation gasStation) {
 		gasStationRepository.save(gasStation);
-	}
-
-	public void update(GasStation gasStation) {
-
 	}
 
 	public List<GasStation> findAll() {

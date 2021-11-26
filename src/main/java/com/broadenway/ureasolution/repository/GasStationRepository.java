@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.broadenway.ureasolution.domain.GasStation;
 
-public interface GasStationRepository extends JpaRepository<GasStation, Long> {
+public interface GasStationRepository extends JpaRepository<GasStation, String> {
 
-	Optional<GasStation> findByStationCode(String stationCode);
+	// Optional<GasStation> findByStationCode(String stationCode);
 }

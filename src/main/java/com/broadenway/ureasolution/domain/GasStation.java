@@ -1,5 +1,7 @@
 package com.broadenway.ureasolution.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -60,5 +62,24 @@ public class GasStation {
 		this.latitude = updateInfo.latitude;
 		this.longitude = updateInfo.longitude;
 		this.lastModfeDttm = updateInfo.lastModfeDttm;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o){
+			return true;
+		}
+
+		if (!(o instanceof GasStation)){
+			return false;
+		}
+
+		GasStation that = (GasStation)o;
+		return Objects.equals(getStationCode(), that.getStationCode());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getStationCode());
 	}
 }
