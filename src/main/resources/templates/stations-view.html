@@ -2,7 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org" style="width: 100%;height: 100%">
 <head>
     <title>요소수맵</title>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7d3da1b07e90a4db7425503f70e966a6"></script>
+    <meta name="description" content="요소수 보유 현황을 한눈에 보는 요소수맵">
+    <meta property="og:title" content="요소수맵">
+    <meta property="og:description" content="주유소별 요소수 보유 현황을 요소수맵으로 한눈에 조회">
+    <meta property="og:image" content="https://yssmap.com/images/icons8-car-200.png">
+    <meta property="og:url" content="https://yssmap.com/">
+    <link rel="canonical" href="https://yssmap.com/">
+<!--    <script th:inline="javascript">-->
+<!--        -->
+<!--    </script>-->
+    <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey='+${mapKey}}"></script>
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
      <div th:replace="./fragments/header.html :: fragment-header"/>
     <link href="/css/map.css" rel="stylesheet" />
@@ -27,7 +36,7 @@
             </div>
         </div>
         <div style="padding-left: 10px; padding-top:5px; font-weight: bold;color: cadetblue">
-            <h5>주유소별 요소수 재고 현황</h5>
+            <h5>주유소별 요소수 보유 현황</h5>
             <h7 style="color: darkgray" >준실시간 업데이트(10분 단위 갱신)</h7>
         </div>
         <footer th:replace="./fragments/footer.html :: fragment-footer"/>
