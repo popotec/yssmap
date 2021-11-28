@@ -105,8 +105,10 @@ function initStations(includeNoStocks) {
                  content : '<div class="info-title">'+
                  '<span style="font-size:13px; font-weight: bold"> '+ station.name +'&nbsp;&nbsp;</span>'+
                  '<span onclick="navi('+j+')"><i style="size:20px;" class="fas fa-directions"></i></span><br/>'+
-                 '<span style="font-size:13px;font-weight:bold">'+'재고: '+station.stocks+'ℓ &nbsp; (₩'+station.prices+'/ℓ) </span><br/>' +
-                 '<span style="padding:5px;font-size:12px;color:darkgray">' + station.address + '</span>'+
+                 '<span style="font-size:12px;">보유: '+station.stocks+'ℓ &nbsp;</span>' +
+                 '<span style="font-size:11px;">(₩'+station.prices+'/ℓ) </span><br/>' +
+                 '<span style="font-size:12px;color:darkgray">' + station.address + '</span><br/> '+
+                 '<span style="font-size:12px;color:darkgray"><i class="fas fa-phone-alt"></i>&nbsp;'+station.telNo + '</span>'+
                  '</div>'
              });
             infos.push(info);
