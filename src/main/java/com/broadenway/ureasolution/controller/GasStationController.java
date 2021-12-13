@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.broadenway.ureasolution.domain.GasStationDto;
+import com.broadenway.ureasolution.dto.GasStationDto;
 import com.broadenway.ureasolution.service.GasStationService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,10 +25,10 @@ public class GasStationController {
 
 	@RequestMapping("/station-list")
 	public ModelAndView getStations() {
-		List<GasStationDto> gasStationDatas = gasStationService.findAll()
-			.stream()
-			.map(GasStationDto::from)
-			.collect(Collectors.toList());
+		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
+			// .stream()
+			// .map(GasStationDto::from)
+			// .collect(Collectors.toList());
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("gasStations", gasStationDatas);
 		modelAndView.setViewName("index");
@@ -37,10 +37,7 @@ public class GasStationController {
 
 	@RequestMapping("/")
 	public ModelAndView getStationsView() {
-		List<GasStationDto> gasStationDatas = gasStationService.findAll()
-			.stream()
-			.map(GasStationDto::from)
-			.collect(Collectors.toList());
+		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("gasStations", gasStationDatas);
 		modelAndView.addObject("mapKey", kakaoMapKey);
