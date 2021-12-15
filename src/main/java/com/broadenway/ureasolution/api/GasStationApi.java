@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(path = "/api/stations")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3052", allowedHeaders = "*")
+// react 서버용 포트에 대해 cors 허용
 public class GasStationApi {
 
 	private final GasStationService gasStationService;
