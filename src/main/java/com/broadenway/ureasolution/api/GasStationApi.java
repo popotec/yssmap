@@ -39,11 +39,11 @@ public class GasStationApi {
 		return ResponseEntity.created(URI.create("/api/stations/" + createdGasStation.getStationCode())).build();
 	}
 
-	@GetMapping("/optimized")
-	public ResponseEntity<List<GasStationDto>> getStationsViewOptimized(@RequestParam(value = "latitude") String latitude,
+	@GetMapping("/near-center")
+	public ResponseEntity<List<GasStationDto>> getStationsNearCenterPosition(@RequestParam(value = "latitude") String latitude,
 		@RequestParam(value = "longitude") String longitude) {
 
-		List<GasStationDto> gasStationDatas = gasStationService.findAllDtosOptimizedDto(latitude, longitude);
+		List<GasStationDto> gasStationDatas = gasStationService.findAllNearCenterPositionDto(latitude, longitude);
 		return ResponseEntity.ok(gasStationDatas);
 	}
 }

@@ -21,7 +21,7 @@ class GasStationApiTest extends AcceptanceTest {
 
 	private static final String GAS_STATION_API_PATH="/api/stations";
 
-	@DisplayName("중심 좌표 기준의로 +-1 위치들만 반환")
+	@DisplayName("중심 좌표 기준 근처 위치들만 반환")
 	@Test
 	public void getStationsOptimized() {
 		// given
@@ -36,20 +36,11 @@ class GasStationApiTest extends AcceptanceTest {
 			"125.36478340", "2021-11-27 20:00:00");
 
 		// when
-		ExtractableResponse<Response> 주유소_목록_조회됨 = 주유소_목록_조회_성능개선_요청("34.0234","125.23");
+		ExtractableResponse<Response> 주유소_목록_조회됨 = 중심좌표_기준_근처_주유소만_조회("33.5234","125.23");
 
 		// then
 		요청_정상_처리_확인(주유소_목록_조회됨);
 		주유소_목록_확인(Arrays.asList(경부고속도로_하행_주유소),주유소_목록_조회됨);
-	}
-
-	private ExtractableResponse<Response> 주유소_목록_조회_성능개선_요청(String latitude, String longitude) {
-		return RestAssured
-			.given().log().all()
-			.when().get(GAS_STATION_API_PATH+"/optimized?latitude="+
-				latitude+"&longitude="+longitude)
-			.then().log().all()
-			.extract();
 	}
 
 	@DisplayName("주유소 목록 조회 테스트")
@@ -74,6 +65,15 @@ class GasStationApiTest extends AcceptanceTest {
 		주유소_목록_확인(Arrays.asList(용서고속도로_상행_주유소,경부고속도로_하행_주유소),주유소_목록_조회됨);
 	}
 
+	private ExtractableResponse<Response> 중심좌표_기준_근처_주유소만_조회(String latitude, String longitude) {
+		return RestAssured
+			.given().log().all()
+			.when().get(GAS_STATION_API_PATH+"/near-center?latitude="+
+				latitude+"&longitude="+longitude)
+			.then().log().all()
+			.extract();
+	}
+
 	private void 요청_정상_처리_확인(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
@@ -86,7 +86,8 @@ class GasStationApiTest extends AcceptanceTest {
 		List<String> resultStationCodes = responses.jsonPath().getList(".", GasStationDto.class).stream()
 			.map(GasStationDto::getStationCode)
 			.collect(Collectors.toList());
-		assertThat(expectedStationCodes).containsAll(resultStationCodes);
+
+		assertThat(resultStationCodes).containsAll(expectedStationCodes);
 	}
 
 	private ExtractableResponse<Response> 주유소_등록되어_있음(String stationCode, String name, String address, String telNo, String openingHours,

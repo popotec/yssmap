@@ -43,7 +43,7 @@ public class GasStationService {
 		return gasStationRepository.findAll();
 	}
 
-	public List<GasStationDto> findAllDtosOptimizedDto(String latitude, String longitude) {
+	public List<GasStationDto> findAllNearCenterPositionDto(String latitude, String longitude) {
 		return findAllDtosOptimized(latitude, longitude)
 			.stream()
 			.map(GasStationDto::from)

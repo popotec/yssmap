@@ -28,9 +28,6 @@ public class GasStationController {
 	@RequestMapping("/station-list")
 	public ModelAndView getStations() {
 		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
-		// .stream()
-		// .map(GasStationDto::from)
-		// .collect(Collectors.toList());
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("gasStations", gasStationDatas);
 		modelAndView.setViewName("index");
@@ -39,21 +36,7 @@ public class GasStationController {
 
 	@RequestMapping("/")
 	public ModelAndView getStationsView() {
-		// List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
 		ModelAndView modelAndView = new ModelAndView();
-		// modelAndView.addObject("gasStations", gasStationDatas);
-		modelAndView.addObject("mapKey", kakaoMapKey);
-		modelAndView.setViewName("stations-view");
-		return modelAndView;
-	}
-
-	@RequestMapping("/optimized")
-	public ModelAndView getStationsViewOptimized(@RequestParam(value = "latitude") String latitude,
-		@RequestParam(value = "longitude") String longitude) {
-
-		List<GasStationDto> gasStationDatas = gasStationService.findAllDtosOptimizedDto(latitude, longitude);
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("gasStations", gasStationDatas);
 		modelAndView.addObject("mapKey", kakaoMapKey);
 		modelAndView.setViewName("stations-view");
 		return modelAndView;
