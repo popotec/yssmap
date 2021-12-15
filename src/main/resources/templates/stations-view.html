@@ -10,6 +10,7 @@
     <link rel="canonical" href="https://yssmap.com/">
     <script type="text/javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey='+${mapKey}}"></script>
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
      <div th:replace="./fragments/header.html :: fragment-header"/>
     <link href="/css/map.css" rel="stylesheet" />
 </head>
@@ -39,7 +40,7 @@
         <footer th:replace="./fragments/footer.html :: fragment-footer"/>
     </div>
     <script th:inline="javascript">
-    var stations =   [[${gasStations}]];
+    // var stations =   [[${gasStations}]];
     </script>
     <script src="./js/mapview.js"></script>
 </div>

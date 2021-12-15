@@ -39,9 +39,9 @@ public class GasStationController {
 
 	@RequestMapping("/")
 	public ModelAndView getStationsView() {
-		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
+		// List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("gasStations", gasStationDatas);
+		// modelAndView.addObject("gasStations", gasStationDatas);
 		modelAndView.addObject("mapKey", kakaoMapKey);
 		modelAndView.setViewName("stations-view");
 		return modelAndView;

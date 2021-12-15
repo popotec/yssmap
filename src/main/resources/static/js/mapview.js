@@ -1,52 +1,78 @@
-let markers =[];
-let infos=[];
+let markers = [];
+let infos = [];
 let map;
+let stations=[];
+let isIncludeNoStocks=false;
 
 window.addEventListener('DOMContentLoaded', event => {
 
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+    let mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
-            center: new kakao.maps.LatLng(stations[0].latitude, stations[0].longitude), // 지도의 중심좌표
-            level: 10 // 지도의 확대 레벨
+            center: new kakao.maps.LatLng(37.0, 127.0), // 지도의 중심좌표
+            level: 8 // 지도의 확대 레벨
         };
     map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-    initStations(true);
+    kakao.maps.event.addListener(map, 'center_changed', function() {
+        // alert('center changed!');
+        requestStationDatas();
+    });
+
     serUserPosition();
 
+
+    // console.log(stations);
+    // initStations(true);
 });
+function requestStationDatas(){
+    let position = map.getCenter();
+    let centerLatitude = position.getLat();
+    let centerLongitude = position.getLng();
+
+    $.ajax({
+        url: "/api/stations/optimized",
+        data: {
+            latitude:centerLatitude,
+            longitude:centerLongitude,
+        },
+        type: "GET",
+    }).done(function (data) {
+        stations=data;
+        initStations();
+    });
+}
 
 function closeAllInfos() {
-    for(const info of infos){
+    for (const info of infos) {
         info.close();
     }
 }
 
 function setMapType() {
-                    <!-- btn , selected_btn-->
+    <!-- btn , selected_btn-->
     var mapControl = document.getElementById('btnToggleStocks');
-    var includeNoStocks=false;
-    if(mapControl.className == 'selected_btn'){ //제고 없음 포함 -> 제고없음 제외 상태로 변경
+    if (mapControl.className == 'selected_btn') { //제고 없음 포함 -> 제고없음 제외 상태로 변경
         mapControl.className = 'unselected_btn';
-        mapControl.textContent="재고없음 포함";
-    }
-    else{ // 제고없음 제외 -> 제고없음 포화 상태로 변경
+        mapControl.textContent = "재고없음 포함";
+        isIncludeNoStocks=false;
+    } else { // 제고없음 제외 -> 제고없음 포화 상태로 변경
         mapControl.className = 'selected_btn';
-        mapControl.textContent="재고없음 제외";
-        includeNoStocks=true;
+        mapControl.textContent = "재고없음 제외";
+        isIncludeNoStocks = true;
     }
-    initStations(includeNoStocks);
+    initStations();
 }
+
 function initMarkersAndInfos() {
-    for(const marker of markers){
+    for (const marker of markers) {
         marker.setMap(null);
     }
-    for(const info of infos){
+    for (const info of infos) {
         info.close();
     }
 
-    markers=[];
-    infos=[];
+    markers = [];
+    infos = [];
 }
 
 function serUserPosition() {
@@ -55,7 +81,7 @@ function serUserPosition() {
     if (navigator.geolocation) {
 
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
 
             var lat = position.coords.latitude, // 위도
                 lon = position.coords.longitude; // 경도
@@ -72,68 +98,71 @@ function serUserPosition() {
             // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
             var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
 
-            const marker =  new kakao.maps.Marker({
-                                position: locPosition,
-                                image:markerImage
-                                });
+            const marker = new kakao.maps.Marker({
+                position: locPosition,
+                image: markerImage
+            });
             marker.setMap(map);
             map.setCenter(locPosition);
-          });
+            requestStationDatas();
+        });
 
     }
 }
 
-function initStations(includeNoStocks) {
+function initStations() {
 
     initMarkersAndInfos();
 
-    let j=0;
-    for(var station of stations){
-    j++;
-            if(!includeNoStocks && station.stocks==0){
-                continue;
-            }
-            const markerPosition  = new kakao.maps.LatLng(station.latitude, station.longitude);
-            const marker =  new kakao.maps.Marker({
-                                                    position: markerPosition
-                                                    });
-            markers.push(marker);
-
-            const info = new kakao.maps.InfoWindow({
-                 removable: false,
-                 position: marker.position,
-                 content : '<div class="info-title">'+
-                 '<span style="font-size:13px; font-weight: bold"> '+ station.name +'&nbsp;&nbsp;</span>'+
-                 '<span onclick="navi('+j+')"><i style="size:20px;" class="fas fa-directions"></i></span><br/>'+
-                 '<span style="font-size:12px;">보유: '+station.stocks+'ℓ &nbsp;</span>' +
-                 '<span style="font-size:11px;">(₩'+station.prices+'/ℓ) </span><br/>' +
-                 '<span style="font-size:12px;color:darkgray">' + station.address + '</span><br/> '+
-                 '<span style="font-size:12px;color:darkgray"><i class="fas fa-phone-alt"></i>&nbsp;'+station.telNo + '</span>'+
-                 '</div>'
-             });
-            infos.push(info);
+    let j = 0;
+    for (var station of stations) {
+        j++;
+        if (!isIncludeNoStocks && station.stocks == 0) {
+            continue;
         }
+        const markerPosition = new kakao.maps.LatLng(station.latitude, station.longitude);
+        const marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+        markers.push(marker);
 
-        for(var i=0; i<markers.length; i++){
-            const marker = markers[i];
-            const infoview = infos[i];
+        const info = new kakao.maps.InfoWindow({
+            removable: false,
+            position: marker.position,
+            content: '<div class="info-title">' +
+                '<span style="font-size:13px; font-weight: bold"> ' + station.name + '&nbsp;&nbsp;</span>' +
+                '<span onclick="navi(' + j + ')"><i style="size:20px;" class="fas fa-directions"></i></span><br/>' +
+                '<span style="font-size:12px;">보유: ' + station.stocks + 'ℓ &nbsp;</span>' +
+                '<span style="font-size:11px;">(₩' + station.prices + '/ℓ) </span><br/>' +
+                '<span style="font-size:12px;color:darkgray">' + station.address + '</span><br/> ' +
+                '<span style="font-size:12px;color:darkgray"><i class="fas fa-phone-alt"></i>&nbsp;' + station.telNo + '</span>' +
+                '</div>'
+        });
+        infos.push(info);
+    }
 
-            marker.setMap(map);
+    for (var i = 0; i < markers.length; i++) {
+        const marker = markers[i];
+        const infoview = infos[i];
 
-            kakao.maps.event.addListener(marker, 'click', function() {
-                  closeAllInfos();
-                  infoview.open(map, this);
-             });
-        }
+        marker.setMap(map);
+
+        kakao.maps.event.addListener(marker, 'click', function () {
+            closeAllInfos();
+            infoview.open(map, this);
+        });
+    }
 }
 
-   function navi(stationId) {
-       Kakao.Navi.start({
-         name: stations[stationId].name,
-         x: Number(stations[stationId].longitude),
-         y: Number(stations[stationId].latitude),
-         coordType: 'wgs84'
-       })
-     }
+function navi(stationId) {
+    Kakao.Navi.start({
+        name: stations[stationId].name,
+        x: Number(stations[stationId].longitude),
+        y: Number(stations[stationId].latitude),
+        coordType: 'wgs84'
+    })
+}
 
-     Kakao.init('7d3da1b07e90a4db7425503f70e966a6');
+
+
+Kakao.init('7d3da1b07e90a4db7425503f70e966a6');

@@ -20,7 +20,7 @@ public class GasStationService {
 
 	private static final double DEFAULT_LATITUDE = 37.3;
 	private static final double DEFAULT_LONGITUDE = 126.5;
-	private static final int POSITION_COVERAGE = 1;
+	private static final double POSITION_COVERAGE = 0.2;
 
 	private final GasStationRepository gasStationRepository;
 
