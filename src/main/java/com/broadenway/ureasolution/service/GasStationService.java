@@ -20,6 +20,7 @@ public class GasStationService {
 
 	private static final double DEFAULT_LATITUDE = 37.3;
 	private static final double DEFAULT_LONGITUDE = 126.5;
+	private static final int POSITION_COVERAGE = 1;
 
 	private final GasStationRepository gasStationRepository;
 
@@ -55,38 +56,39 @@ public class GasStationService {
 
 		// user position을 기준으로 위아래 양옆 +1 버퍼만큼 위치한 주유소만 조회
 		// entity의 좌표 column 타입이 String
-		return gasStationRepository.findAllCloseToUserPosition(String.valueOf(userInLatitude - 1),
-			String.valueOf(userInLatitude + 1),String.valueOf(userInLongitude - 1),String.valueOf(userInLongitude + 1));
+		return gasStationRepository.findAllCloseToUserPosition(String.valueOf(userInLatitude - POSITION_COVERAGE),
+			String.valueOf(userInLatitude + POSITION_COVERAGE), String.valueOf(userInLongitude - POSITION_COVERAGE)
+			, String.valueOf(userInLongitude + POSITION_COVERAGE));
 	}
 
 	private double getLatitude(String inputLatitude) {
-		if(inputLatitude==null){
+		if (inputLatitude == null) {
 			return DEFAULT_LATITUDE;
 		}
 
 		try {
 			double latitude = Double.parseDouble(inputLatitude);
-			if(isNotAcceptableLatitude(latitude)){
+			if (isNotAcceptableLatitude(latitude)) {
 				return DEFAULT_LATITUDE;
 			}
 			return latitude;
-		}catch (NumberFormatException ex){
+		} catch (NumberFormatException ex) {
 			return DEFAULT_LATITUDE;
 		}
 	}
 
 	private double getLongitude(String inputLongitude) {
-		if(inputLongitude==null){
+		if (inputLongitude == null) {
 			return DEFAULT_LONGITUDE;
 		}
 
 		try {
 			double longitude = Double.parseDouble(inputLongitude);
-			if(isNotAcceptableLongitude(longitude)){
+			if (isNotAcceptableLongitude(longitude)) {
 				return DEFAULT_LONGITUDE;
 			}
 			return longitude;
-		}catch (NumberFormatException ex){
+		} catch (NumberFormatException ex) {
 			return DEFAULT_LONGITUDE;
 		}
 	}
