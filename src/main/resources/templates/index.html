@@ -43,8 +43,7 @@
                             <tr th:each="gasStation : ${gasStations}">
                                 <td th:utext="'<span class=table-row-title>'+ ${gasStation.name} +'</span><br/>'
                                 + '(주소) '+${gasStation.address} + '<br/>'
-                                + '(전화) '+${gasStation.telNo} + '<br/>'
-                                + '(영업시간) '+${gasStation.openingHours}"></td>
+                                + '(전화) '+${gasStation.telNo} + '<br/>'"></td>
                                  <td th:utext="'<span style=font-weight:bold;color:cadetblue>'+${gasStation.stocks} +'</span><br/>'
                                 + '(₩'+${gasStation.prices}+'/ℓ)'"></td>
                             </tr>
