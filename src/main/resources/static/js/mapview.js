@@ -20,9 +20,6 @@ window.addEventListener('DOMContentLoaded', event => {
 
     serUserPosition();
 
-
-    // console.log(stations);
-    // initStations(true);
 });
 function requestStationDatas(){
     let position = map.getCenter();
@@ -30,7 +27,7 @@ function requestStationDatas(){
     let centerLongitude = position.getLng();
 
     $.ajax({
-        url: "/api/stations/optimized",
+        url: "/api/stations/near-center",
         data: {
             latitude:centerLatitude,
             longitude:centerLongitude,
