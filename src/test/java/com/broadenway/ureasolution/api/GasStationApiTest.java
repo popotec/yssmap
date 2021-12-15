@@ -21,6 +21,37 @@ class GasStationApiTest extends AcceptanceTest {
 
 	private static final String GAS_STATION_API_PATH="/api/stations";
 
+	@DisplayName("중심 좌표 기준의로 +-1 위치들만 반환")
+	@Test
+	public void getStationsOptimized() {
+		// given
+		ExtractableResponse<Response> 용서고속도로_상행_주유소 = 주유소_등록되어_있음("TEST1530",
+			"용서고속도로(상행)", "용인시 수지구 232-3", "031-324-2321",
+			"09:00~18:00", "2500", "1500", "38.46050360",
+			"129.36478340", "2021-11-26 20:00:00");
+
+		ExtractableResponse<Response> 경부고속도로_하행_주유소 = 주유소_등록되어_있음("TEST1531",
+			"경부고속도로(하행)", "충청북도 청주시 232-3", "043-213-2321",
+			"09:00~18:00", "1500", "2500", "33.46050360",
+			"125.36478340", "2021-11-27 20:00:00");
+
+		// when
+		ExtractableResponse<Response> 주유소_목록_조회됨 = 주유소_목록_조회_성능개선_요청("34.0234","125.23");
+
+		// then
+		요청_정상_처리_확인(주유소_목록_조회됨);
+		주유소_목록_확인(Arrays.asList(경부고속도로_하행_주유소),주유소_목록_조회됨);
+	}
+
+	private ExtractableResponse<Response> 주유소_목록_조회_성능개선_요청(String latitude, String longitude) {
+		return RestAssured
+			.given().log().all()
+			.when().get(GAS_STATION_API_PATH+"/optimized?latitude="+
+				latitude+"&longitude="+longitude)
+			.then().log().all()
+			.extract();
+	}
+
 	@DisplayName("주유소 목록 조회 테스트")
 	@Test
 	public void getStations() {

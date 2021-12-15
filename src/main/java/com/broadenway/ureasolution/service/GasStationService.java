@@ -18,9 +18,12 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class GasStationService {
 
+	private static final double DEFAULT_LATITUDE = 37.3;
+	private static final double DEFAULT_LONGITUDE = 126.5;
+
 	private final GasStationRepository gasStationRepository;
 
-	public Optional<GasStation> findGasStationByStationCode(String stationCode){
+	public Optional<GasStation> findGasStationByStationCode(String stationCode) {
 		return gasStationRepository.findById(stationCode);
 	}
 
@@ -37,5 +40,74 @@ public class GasStationService {
 
 	public List<GasStation> findAll() {
 		return gasStationRepository.findAll();
+	}
+
+	public List<GasStationDto> findAllDtosOptimizedDto(String latitude, String longitude) {
+		return findAllDtosOptimized(latitude, longitude)
+			.stream()
+			.map(GasStationDto::from)
+			.collect(Collectors.toList());
+	}
+
+	public List<GasStation> findAllDtosOptimized(String latitude, String longitude) {
+		double userInLatitude = getLatitude(latitude);
+		double userInLongitude = getLongitude(longitude);
+
+		// user position을 기준으로 위아래 양옆 +1 버퍼만큼 위치한 주유소만 조회
+		// entity의 좌표 column 타입이 String
+		return gasStationRepository.findAllCloseToUserPosition(String.valueOf(userInLatitude - 1),
+			String.valueOf(userInLatitude + 1),String.valueOf(userInLongitude - 1),String.valueOf(userInLongitude + 1));
+	}
+
+	private double getLatitude(String inputLatitude) {
+		if(inputLatitude==null){
+			return DEFAULT_LATITUDE;
+		}
+
+		try {
+			double latitude = Double.parseDouble(inputLatitude);
+			if(isNotAcceptableLatitude(latitude)){
+				return DEFAULT_LATITUDE;
+			}
+			return latitude;
+		}catch (NumberFormatException ex){
+			return DEFAULT_LATITUDE;
+		}
+	}
+
+	private double getLongitude(String inputLongitude) {
+		if(inputLongitude==null){
+			return DEFAULT_LONGITUDE;
+		}
+
+		try {
+			double longitude = Double.parseDouble(inputLongitude);
+			if(isNotAcceptableLongitude(longitude)){
+				return DEFAULT_LONGITUDE;
+			}
+			return longitude;
+		}catch (NumberFormatException ex){
+			return DEFAULT_LONGITUDE;
+		}
+	}
+
+	private boolean isNotAcceptableLatitude(Double latitude) {
+		if (latitude == null) {
+			return true;
+		}
+		if (latitude < 31 || latitude > 39) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isNotAcceptableLongitude(Double longitude) {
+		if (longitude == null) {
+			return true;
+		}
+		if (longitude < 123 || longitude > 130) {
+			return true;
+		}
+		return false;
 	}
 }
