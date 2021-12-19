@@ -13,9 +13,8 @@ window.addEventListener('DOMContentLoaded', event => {
         };
     map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-    kakao.maps.event.addListener(map, 'bounds_changed', function(data) {
+    kakao.maps.event.addListener(map, 'dragend', function(data) {
 
-        // alert('center changed!');
         requestStationDatas();
     });
 
@@ -68,7 +67,7 @@ function setMapType() {
 function initMarkersAndInfos() {
     for (const marker of markers) {
         marker.setMap(null);
-    }거
+    }
     for (const info of infos) {
         info.close();
     }
