@@ -23,19 +23,23 @@ window.addEventListener('DOMContentLoaded', event => {
 
 });
 function requestStationDatas(){
-    let position = map.getCenter();
-    let centerLatitude = position.getLat();
-    let centerLongitude = position.getLng();
+
+    var bounds = map.getBounds();
+    var southWestlatlng = bounds.getSouthWest();
+    var northEastlatlng = bounds.getNorthEast();
 
     $.ajax({
-        url: "/api/stations/near-center",
+        url: "/api/stations/bounds",
         data: {
-            latitude:centerLatitude,
-            longitude:centerLongitude,
+            westBound:southWestlatlng.getLng(),
+            southBound:southWestlatlng.getLat(),
+            eastBound:northEastlatlng.getLng(),
+            northBound:northEastlatlng.getLat(),
         },
         type: "GET",
     }).done(function (data) {
         stations=data;
+        console.log(stations);
         initStations();
     });
 }
@@ -64,7 +68,7 @@ function setMapType() {
 function initMarkersAndInfos() {
     for (const marker of markers) {
         marker.setMap(null);
-    }
+    }거
     for (const info of infos) {
         info.close();
     }
@@ -84,6 +88,7 @@ function serUserPosition() {
             var lat = position.coords.latitude, // 위도
                 lon = position.coords.longitude; // 경도
 
+
             var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
                 message = '<div style="padding:5px;">현재위치</div>'; // 인포윈도우에 표시될 내용입니다
 
@@ -102,6 +107,7 @@ function serUserPosition() {
             });
             marker.setMap(map);
             map.setCenter(locPosition);
+
             requestStationDatas();
         });
 
