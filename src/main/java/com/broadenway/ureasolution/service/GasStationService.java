@@ -52,8 +52,9 @@ public class GasStationService {
 	}
 
 	public List<GasStation> findAllDtosOptimized(String latitude, String longitude) {
-		double userInLatitude = getLatitude(latitude);
-		double userInLongitude = getLongitude(longitude);
+		validateBounds(latitude, longitude);
+		double userInLatitude = Double.parseDouble(latitude);
+		double userInLongitude = Double.parseDouble(longitude);
 
 		// user position을 기준으로 위아래 양옆 +1 버퍼만큼 위치한 주유소만 조회
 		// entity의 좌표 column 타입이 String
@@ -62,75 +63,36 @@ public class GasStationService {
 			, String.valueOf(userInLongitude + POSITION_COVERAGE));
 	}
 
-	public List<GasStationDto> findAllInMapBoundsDto(String westBound, String southBound, String eastBound, String northBound) {
-		return findAllInMapBounds( westBound, southBound, eastBound, northBound)
+	public List<GasStationDto> findAllInMapBoundsDto(String westBound, String southBound, String eastBound,
+		String northBound) {
+		return findAllInMapBounds(westBound, southBound, eastBound, northBound)
 			.stream()
 			.map(GasStationDto::from)
 			.collect(Collectors.toList());
 	}
 
-	public List<GasStation> findAllInMapBounds(String westBound, String southBound, String eastBound, String northBound) {
-		double westLongitude = getLongitude(westBound);
-		double eastLongitude = getLongitude(eastBound);
-		double southLatitude = getLatitude(southBound);
-		double northLatitude = getLatitude(northBound);
+	public List<GasStation> findAllInMapBounds(String westBound, String southBound, String eastBound,
+		String northBound) {
+		validateBounds(westBound, eastBound, southBound, northBound);
 
-		return gasStationRepository.findAllInBoundary(String.valueOf(southBound),
-			String.valueOf(northBound), String.valueOf(westLongitude)
-			, String.valueOf(eastLongitude));
+		return gasStationRepository.findAllInBoundary(southBound, northBound
+			, westBound, eastBound);
 	}
 
-	private double getLatitude(String inputLatitude) {
-		if (inputLatitude == null) {
-			return DEFAULT_LATITUDE;
-		}
-
-		try {
-			double latitude = Double.parseDouble(inputLatitude);
-			if (isNotAcceptableLatitude(latitude)) {
-				return DEFAULT_LATITUDE;
+	private void validateBounds(String... bounds) {
+		for (String bound : bounds) {
+			if (bound == null) {
+				throw new IllegalArgumentException("맵 경계값을 포함하여 요청해야합니다.");
 			}
-			return latitude;
-		} catch (NumberFormatException ex) {
-			return DEFAULT_LATITUDE;
-		}
-	}
 
-	private double getLongitude(String inputLongitude) {
-		if (inputLongitude == null) {
-			return DEFAULT_LONGITUDE;
-		}
-
-		try {
-			double longitude = Double.parseDouble(inputLongitude);
-			if (isNotAcceptableLongitude(longitude)) {
-				return DEFAULT_LONGITUDE;
+			try {
+				double position = Double.parseDouble(bound);
+				if (position < 0) {
+					throw new IllegalArgumentException("경계 좌표는 0 이상이어야 합니다.");
+				}
+			} catch (NumberFormatException ex) {
+				throw new NumberFormatException("좌표는 숫자여야 합니다.");
 			}
-			return longitude;
-		} catch (NumberFormatException ex) {
-			return DEFAULT_LONGITUDE;
 		}
 	}
-
-	private boolean isNotAcceptableLatitude(Double latitude) {
-		if (latitude == null) {
-			return true;
-		}
-		if (latitude < 31 || latitude > 39) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isNotAcceptableLongitude(Double longitude) {
-		if (longitude == null) {
-			return true;
-		}
-		if (longitude < 123 || longitude > 130) {
-			return true;
-		}
-		return false;
-	}
-
-
 }
