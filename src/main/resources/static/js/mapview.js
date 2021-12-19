@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', event => {
         };
     map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-    kakao.maps.event.addListener(map, 'dragend', function(data) {
+    kakao.maps.event.addListener(map, 'tilesloaded', function(data) {
 
         requestStationDatas();
     });
