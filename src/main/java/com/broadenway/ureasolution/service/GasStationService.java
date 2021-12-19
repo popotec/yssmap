@@ -74,15 +74,9 @@ public class GasStationService {
 		double eastLongitude = getLongitude(eastBound);
 		double southLatitude = getLatitude(southBound);
 		double northLatitude = getLatitude(northBound);
-		System.out.println(westLongitude);
-		System.out.println(eastLongitude);
-		System.out.println(southLatitude);
-		System.out.println(northLatitude);
 
-		// user position을 기준으로 위아래 양옆 +1 버퍼만큼 위치한 주유소만 조회
-		// entity의 좌표 column 타입이 String
-		return gasStationRepository.findAllInBoundary(String.valueOf(northLatitude),
-			String.valueOf(southLatitude), String.valueOf(westLongitude)
+		return gasStationRepository.findAllInBoundary(String.valueOf(southBound),
+			String.valueOf(northBound), String.valueOf(westLongitude)
 			, String.valueOf(eastLongitude));
 	}
 
