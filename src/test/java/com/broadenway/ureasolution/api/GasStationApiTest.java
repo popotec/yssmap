@@ -81,8 +81,8 @@ class GasStationApiTest extends AcceptanceTest {
 			"125.36478340", "2021-11-27 20:00:00");
 
 		// when
-		ExtractableResponse<Response> 주유소_목록_조회됨 = 맵_경계_내_주유소만_조회("123.23", "34.5234",
-			"125.45", "33.2");
+		ExtractableResponse<Response> 주유소_목록_조회됨 = 맵_경계_내_주유소만_조회("123.23", "33.2",
+			"125.45", "34.5234");
 
 		// then
 		요청_정상_처리_확인(주유소_목록_조회됨);
