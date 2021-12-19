@@ -49,4 +49,14 @@ public class GasStationApi {
 		List<GasStationDto> gasStationDatas = gasStationService.findAllNearCenterPositionDto(latitude, longitude);
 		return ResponseEntity.ok(gasStationDatas);
 	}
+
+	@GetMapping("/bounds")
+	public ResponseEntity<List<GasStationDto>> getStationsInMapBounds(@RequestParam(value = "westBound") String westBound,
+		@RequestParam(value = "southBound") String southBound, @RequestParam(value = "eastBound") String eastBound,
+		@RequestParam(value = "northBound") String northBound) {
+
+		List<GasStationDto> gasStationDatas = gasStationService.findAllInMapBoundsDto(westBound, southBound,eastBound,northBound);
+		return ResponseEntity.ok(gasStationDatas);
+	}
+
 }

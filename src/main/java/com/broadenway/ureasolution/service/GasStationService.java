@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,9 +57,33 @@ public class GasStationService {
 
 		// user position을 기준으로 위아래 양옆 +1 버퍼만큼 위치한 주유소만 조회
 		// entity의 좌표 column 타입이 String
-		return gasStationRepository.findAllCloseToUserPosition(String.valueOf(userInLatitude - POSITION_COVERAGE),
+		return gasStationRepository.findAllInBoundary(String.valueOf(userInLatitude - POSITION_COVERAGE),
 			String.valueOf(userInLatitude + POSITION_COVERAGE), String.valueOf(userInLongitude - POSITION_COVERAGE)
 			, String.valueOf(userInLongitude + POSITION_COVERAGE));
+	}
+
+	public List<GasStationDto> findAllInMapBoundsDto(String westBound, String southBound, String eastBound, String northBound) {
+		return findAllInMapBounds( westBound, southBound, eastBound, northBound)
+			.stream()
+			.map(GasStationDto::from)
+			.collect(Collectors.toList());
+	}
+
+	public List<GasStation> findAllInMapBounds(String westBound, String southBound, String eastBound, String northBound) {
+		double westLongitude = getLongitude(westBound);
+		double eastLongitude = getLongitude(eastBound);
+		double southLatitude = getLatitude(southBound);
+		double northLatitude = getLatitude(northBound);
+		System.out.println(westLongitude);
+		System.out.println(eastLongitude);
+		System.out.println(southLatitude);
+		System.out.println(northLatitude);
+
+		// user position을 기준으로 위아래 양옆 +1 버퍼만큼 위치한 주유소만 조회
+		// entity의 좌표 column 타입이 String
+		return gasStationRepository.findAllInBoundary(String.valueOf(northLatitude),
+			String.valueOf(southLatitude), String.valueOf(westLongitude)
+			, String.valueOf(eastLongitude));
 	}
 
 	private double getLatitude(String inputLatitude) {
@@ -112,4 +137,6 @@ public class GasStationService {
 		}
 		return false;
 	}
+
+
 }

@@ -2,6 +2,7 @@ package com.broadenway.ureasolution.api;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,29 +20,7 @@ import io.restassured.response.Response;
 
 class GasStationApiTest extends AcceptanceTest {
 
-	private static final String GAS_STATION_API_PATH="/api/stations";
-
-	@DisplayName("중심 좌표 기준 근처 위치들만 반환")
-	@Test
-	public void getStationsOptimized() {
-		// given
-		ExtractableResponse<Response> 용서고속도로_상행_주유소 = 주유소_등록되어_있음("TEST1530",
-			"용서고속도로(상행)", "용인시 수지구 232-3", "031-324-2321",
-			"09:00~18:00", "2500", "1500", "38.46050360",
-			"129.36478340", "2021-11-26 20:00:00");
-
-		ExtractableResponse<Response> 경부고속도로_하행_주유소 = 주유소_등록되어_있음("TEST1531",
-			"경부고속도로(하행)", "충청북도 청주시 232-3", "043-213-2321",
-			"09:00~18:00", "1500", "2500", "33.46050360",
-			"125.36478340", "2021-11-27 20:00:00");
-
-		// when
-		ExtractableResponse<Response> 주유소_목록_조회됨 = 중심좌표_기준_근처_주유소만_조회("33.5234","125.23");
-
-		// then
-		요청_정상_처리_확인(주유소_목록_조회됨);
-		주유소_목록_확인(Arrays.asList(경부고속도로_하행_주유소),주유소_목록_조회됨);
-	}
+	private static final String GAS_STATION_API_PATH = "/api/stations";
 
 	@DisplayName("주유소 목록 조회 테스트")
 	@Test
@@ -62,14 +41,77 @@ class GasStationApiTest extends AcceptanceTest {
 
 		// then
 		요청_정상_처리_확인(주유소_목록_조회됨);
-		주유소_목록_확인(Arrays.asList(용서고속도로_상행_주유소,경부고속도로_하행_주유소),주유소_목록_조회됨);
+		주유소_목록_확인(Arrays.asList(용서고속도로_상행_주유소, 경부고속도로_하행_주유소), 주유소_목록_조회됨);
+	}
+
+	@DisplayName("중심 좌표 기준 근처 위치들만 반환")
+	@Test
+	public void getStationsOptimized() {
+		// given
+		ExtractableResponse<Response> 용서고속도로_상행_주유소 = 주유소_등록되어_있음("TEST1530",
+			"용서고속도로(상행)", "용인시 수지구 232-3", "031-324-2321",
+			"09:00~18:00", "2500", "1500", "38.46050360",
+			"129.36478340", "2021-11-26 20:00:00");
+
+		ExtractableResponse<Response> 경부고속도로_하행_주유소 = 주유소_등록되어_있음("TEST1531",
+			"경부고속도로(하행)", "충청북도 청주시 232-3", "043-213-2321",
+			"09:00~18:00", "1500", "2500", "33.46050360",
+			"125.36478340", "2021-11-27 20:00:00");
+
+		// when
+		ExtractableResponse<Response> 주유소_목록_조회됨 = 중심좌표_기준_근처_주유소만_조회("33.5234", "125.23");
+
+		// then
+		요청_정상_처리_확인(주유소_목록_조회됨);
+		주유소_목록_확인(Arrays.asList(경부고속도로_하행_주유소), 주유소_목록_조회됨);
+	}
+
+	@DisplayName("화면에 보이는 맵 바운더리 안의 좌표에 해당하는 주유소만 조회")
+	@Test
+	public void getStationsInMapBoundary() {
+		// given
+		ExtractableResponse<Response> 용서고속도로_상행_주유소 = 주유소_등록되어_있음("TEST1530",
+			"용서고속도로(상행)", "용인시 수지구 232-3", "031-324-2321",
+			"09:00~18:00", "2500", "1500", "38.46050360",
+			"129.36478340", "2021-11-26 20:00:00");
+
+		ExtractableResponse<Response> 경부고속도로_하행_주유소 = 주유소_등록되어_있음("TEST1531",
+			"경부고속도로(하행)", "충청북도 청주시 232-3", "043-213-2321",
+			"09:00~18:00", "1500", "2500", "33.46050360",
+			"125.36478340", "2021-11-27 20:00:00");
+
+		// when
+		ExtractableResponse<Response> 주유소_목록_조회됨 = 맵_경계_내_주유소만_조회("123.23", "34.5234",
+			"125.45", "33.2");
+
+		// then
+		요청_정상_처리_확인(주유소_목록_조회됨);
+		주유소_목록_확인(Arrays.asList(경부고속도로_하행_주유소), 주유소_목록_조회됨);
+	}
+
+	private ExtractableResponse<Response> 맵_경계_내_주유소만_조회(String westBound, String southBound,
+		String eastBound, String northBound) {
+		return RestAssured
+			.given()
+			.log()
+			.all()
+			.when()
+			.basePath(GAS_STATION_API_PATH)
+			.get(
+				"/bounds?" +
+					"westBound={westBound}&southBound={southBound}&eastBound={eastBound}&northBound={northBound}",
+				westBound, southBound, eastBound, northBound)
+			.then()
+			.log()
+			.all()
+			.extract();
 	}
 
 	private ExtractableResponse<Response> 중심좌표_기준_근처_주유소만_조회(String latitude, String longitude) {
 		return RestAssured
 			.given().log().all()
-			.when().get(GAS_STATION_API_PATH+"/near-center?latitude="+
-				latitude+"&longitude="+longitude)
+			.when().get(GAS_STATION_API_PATH + "/near-center?latitude=" +
+				latitude + "&longitude=" + longitude)
 			.then().log().all()
 			.extract();
 	}
@@ -78,9 +120,10 @@ class GasStationApiTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	private void 주유소_목록_확인(List<ExtractableResponse<Response>> expectedResponses, ExtractableResponse<Response> responses) {
+	private void 주유소_목록_확인(List<ExtractableResponse<Response>> expectedResponses,
+		ExtractableResponse<Response> responses) {
 		List<String> expectedStationCodes = expectedResponses.stream()
-			.map(it->it.header("Location").split("/")[3])
+			.map(it -> it.header("Location").split("/")[3])
 			.collect(Collectors.toList());
 
 		List<String> resultStationCodes = responses.jsonPath().getList(".", GasStationDto.class).stream()
@@ -90,7 +133,8 @@ class GasStationApiTest extends AcceptanceTest {
 		assertThat(resultStationCodes).containsAll(expectedStationCodes);
 	}
 
-	private ExtractableResponse<Response> 주유소_등록되어_있음(String stationCode, String name, String address, String telNo, String openingHours,
+	private ExtractableResponse<Response> 주유소_등록되어_있음(String stationCode, String name, String address, String telNo,
+		String openingHours,
 		String stocks, String prices, String latitude, String longitude, String lastModfeDttm) {
 		GasStationDto gasStationDto = new GasStationDto(stationCode, name, address, telNo, openingHours, stocks, prices,
 			latitude, longitude, lastModfeDttm);
