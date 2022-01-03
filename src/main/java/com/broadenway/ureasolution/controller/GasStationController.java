@@ -25,7 +25,7 @@ public class GasStationController {
 	@Value("${kakao-map-key}")
 	private String kakaoMapKey;
 
-	@RequestMapping("/station-list")
+	@RequestMapping("/stations")
 	public ModelAndView getStations() {
 		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
 		ModelAndView modelAndView = new ModelAndView();
