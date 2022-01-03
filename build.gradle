@@ -6,6 +6,7 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-main'
+//version = '0.0.1-store-api'
 sourceCompatibility = '11'
 
 configurations {
@@ -46,4 +47,5 @@ test {
 
 springBoot {
 	mainClass = "com.broadenway.ureasolution.UreasolutionApplication"
+//	mainClass = "com.broadenway.utils.StoreGasStationInfoMain"
 }
