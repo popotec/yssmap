@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', event => {
         requestStationDatas();
     });
 
-    serUserPosition();
+    setUserPosition();
 
 });
 function requestStationDatas(){
@@ -52,11 +52,11 @@ function closeAllInfos() {
 function setMapType() {
     <!-- btn , selected_btn-->
     var mapControl = document.getElementById('btnToggleStocks');
-    if (mapControl.className == 'selected_btn') { //제고 없음 포함 -> 제고없음 제외 상태로 변경
+    if (mapControl.className == 'selected_btn') { //재고 없음 포함 -> 고없음 제외 상태로 변경
         mapControl.className = 'unselected_btn';
         mapControl.textContent = "재고없음 포함";
         isIncludeNoStocks=false;
-    } else { // 제고없음 제외 -> 제고없음 포화 상태로 변경
+    } else { // 재고없음 제외 -> 재고없음 포화 상태로 변경
         mapControl.className = 'selected_btn';
         mapControl.textContent = "재고없음 제외";
         isIncludeNoStocks = true;
@@ -76,7 +76,7 @@ function initMarkersAndInfos() {
     infos = [];
 }
 
-function serUserPosition() {
+function setUserPosition() {
 
     // HTML5의 geolocation으로 사용할 수 있는지 확인합니다
     if (navigator.geolocation) {
