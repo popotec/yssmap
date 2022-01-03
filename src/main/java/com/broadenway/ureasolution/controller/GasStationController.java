@@ -27,9 +27,9 @@ public class GasStationController {
 
 	@RequestMapping("/stations")
 	public ModelAndView getStations() {
-		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
+		List<GasStationDto> gasStationData = gasStationService.findAllDtos();
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("gasStations", gasStationDatas);
+		modelAndView.addObject("gasStations", gasStationData);
 		modelAndView.setViewName("index");
 		return modelAndView;
 	}

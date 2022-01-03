@@ -15,13 +15,13 @@ window.addEventListener('DOMContentLoaded', event => {
 
     kakao.maps.event.addListener(map, 'tilesloaded', function(data) {
 
-        requestStationDatas();
+        requestStationData();
     });
 
     setUserPosition();
 
 });
-function requestStationDatas(){
+function requestStationData(){
 
     var bounds = map.getBounds();
     var southWestlatlng = bounds.getSouthWest();
@@ -107,7 +107,7 @@ function setUserPosition() {
             marker.setMap(map);
             map.setCenter(locPosition);
 
-            requestStationDatas();
+            requestStationData();
         });
 
     }

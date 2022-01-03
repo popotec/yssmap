@@ -32,8 +32,8 @@ public class GasStationApi {
 
 	@GetMapping
 	public ResponseEntity<List<GasStationDto>> getStations() {
-		List<GasStationDto> gasStationDatas = gasStationService.findAllDtos();
-		return ResponseEntity.ok(gasStationDatas);
+		List<GasStationDto> gasStationData = gasStationService.findAllDtos();
+		return ResponseEntity.ok(gasStationData);
 	}
 
 	@PostMapping
@@ -46,8 +46,8 @@ public class GasStationApi {
 	public ResponseEntity<List<GasStationDto>> getStationsNearCenterPosition(@RequestParam(value = "latitude") String latitude,
 		@RequestParam(value = "longitude") String longitude) {
 
-		List<GasStationDto> gasStationDatas = gasStationService.findAllNearCenterPositionDto(latitude, longitude);
-		return ResponseEntity.ok(gasStationDatas);
+		List<GasStationDto> gasStationData = gasStationService.findAllNearCenterPositionDto(latitude, longitude);
+		return ResponseEntity.ok(gasStationData);
 	}
 
 	@GetMapping("/bounds")
@@ -55,8 +55,8 @@ public class GasStationApi {
 		@RequestParam(value = "southBound") String southBound, @RequestParam(value = "eastBound") String eastBound,
 		@RequestParam(value = "northBound") String northBound) {
 
-		List<GasStationDto> gasStationDatas = gasStationService.findAllInMapBoundsDto(westBound, southBound,eastBound,northBound);
-		return ResponseEntity.ok(gasStationDatas);
+		List<GasStationDto> gasStationData = gasStationService.findAllInMapBoundsDto(westBound, southBound,eastBound,northBound);
+		return ResponseEntity.ok(gasStationData);
 	}
 
 }
