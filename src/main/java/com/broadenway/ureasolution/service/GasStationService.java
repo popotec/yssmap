@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,13 +35,14 @@ public class GasStationService {
 		return GasStationDto.from(gasStationRepository.save(gasStation.toGasStation()));
 	}
 
+	@Cacheable(value = "station")
 	public List<GasStationDto> findAllDtos() {
 		return findAll().stream()
 			.map(GasStationDto::from)
 			.collect(Collectors.toList());
 	}
 
-	public List<GasStation> findAll() {
+	protected List<GasStation> findAll() {
 		return gasStationRepository.findAll();
 	}
 
@@ -71,7 +73,7 @@ public class GasStationService {
 			.collect(Collectors.toList());
 	}
 
-	public List<GasStation> findAllInMapBounds(String westBound, String southBound, String eastBound,
+	protected List<GasStation> findAllInMapBounds(String westBound, String southBound, String eastBound,
 		String northBound) {
 		validateBounds(westBound, eastBound, southBound, northBound);
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,6 +40,7 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 		this.gasStationRepository = gasStationRepository;
 	}
 
+	@CacheEvict(value = "station", allEntries = true)
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		List<GasStation> gasStations = getStationsFromAPI();
