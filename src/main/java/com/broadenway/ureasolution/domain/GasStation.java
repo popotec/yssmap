@@ -1,5 +1,7 @@
 package com.broadenway.ureasolution.domain;
 
+import com.broadenway.ureasolution.dto.MapBound;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -33,15 +35,15 @@ public class GasStation {
 	private String stocks;
 
 	private String prices;
-	private String latitude;
-	private String longitude;
+	private double latitude;
+	private double longitude;
 	private String lastModfeDttm;
 
 	protected GasStation() {
 	}
 
 	public GasStation(String stationCode, String name, String address, String telNo, String openingHours,
-		String stocks, String prices, String latitude, String longitude, String lastModfeDttm) {
+		String stocks, String prices, double latitude, double longitude, String lastModfeDttm) {
 		this.stationCode = stationCode;
 		this.name = name;
 		this.address = address;

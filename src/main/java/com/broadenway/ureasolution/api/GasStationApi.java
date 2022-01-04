@@ -1,5 +1,6 @@
 package com.broadenway.ureasolution.api;
 
+import com.broadenway.ureasolution.dto.MapBound;
 import java.net.URI;
 import java.util.List;
 
@@ -42,20 +43,14 @@ public class GasStationApi {
 		return ResponseEntity.created(URI.create("/api/stations/" + createdGasStation.getStationCode())).build();
 	}
 
-	@GetMapping("/near-center")
-	public ResponseEntity<List<GasStationDto>> getStationsNearCenterPosition(@RequestParam(value = "latitude") String latitude,
-		@RequestParam(value = "longitude") String longitude) {
-
-		List<GasStationDto> gasStationData = gasStationService.findAllNearCenterPositionDto(latitude, longitude);
-		return ResponseEntity.ok(gasStationData);
-	}
-
 	@GetMapping("/bounds")
 	public ResponseEntity<List<GasStationDto>> getStationsInMapBounds(@RequestParam(value = "westBound") String westBound,
 		@RequestParam(value = "southBound") String southBound, @RequestParam(value = "eastBound") String eastBound,
 		@RequestParam(value = "northBound") String northBound) {
 
-		List<GasStationDto> gasStationData = gasStationService.findAllInMapBoundsDto(westBound, southBound,eastBound,northBound);
+		MapBound mapBound = MapBound.from(westBound, southBound, eastBound, northBound);
+
+		List<GasStationDto> gasStationData = gasStationService.findAllInMapBoundsDto(mapBound);
 		return ResponseEntity.ok(gasStationData);
 	}
 

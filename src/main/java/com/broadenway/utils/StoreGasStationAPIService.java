@@ -1,5 +1,6 @@
 package com.broadenway.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +112,8 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 				(String)data.get(ResponseFieldName.OPENNING_HOURS.getName()),
 				String.valueOf(data.get(ResponseFieldName.STOCSK.getName())),
 				(String)data.get(ResponseFieldName.PRICE.getName()),
-				(String)data.get(ResponseFieldName.LATITUDE.getName()),
-				(String)data.get(ResponseFieldName.LONGITUDE.getName()),
+				Double.parseDouble((String)data.get(ResponseFieldName.LATITUDE.getName())),
+				Double.parseDouble((String)data.get(ResponseFieldName.LONGITUDE.getName())),
 				(String)data.get(ResponseFieldName.STD_DT.getName())
 			)).collect(Collectors.toList());
 	}

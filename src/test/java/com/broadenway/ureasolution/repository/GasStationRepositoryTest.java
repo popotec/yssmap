@@ -2,6 +2,7 @@ package com.broadenway.ureasolution.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.broadenway.ureasolution.api.AcceptanceTest;
 import com.broadenway.ureasolution.domain.GasStation;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class GasStationRepositoryTest {
@@ -30,8 +33,8 @@ class GasStationRepositoryTest {
 		// given
 		gasStation = new GasStation("K0011530",
 			"용인 수지구", "용인시 수지구 232-3", "031-324-2321",
-			"09:00~18:00", "2500", "1500", "35.46050360",
-			"129.36478340", "2021-11-26 20:00:00");
+			"09:00~18:00", "2500", "1500", 35.46050360,
+			129.36478340, "2021-11-26 20:00:00");
 	}
 
 	@Test
