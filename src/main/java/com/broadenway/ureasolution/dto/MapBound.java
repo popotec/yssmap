@@ -4,16 +4,16 @@ import java.math.BigDecimal;
 
 public class MapBound {
 
-    private double westBound;
-    private double southBound;
-    private double eastBound;
-    private double northBound;
+    private Double westBound;
+    private Double southBound;
+    private Double eastBound;
+    private Double northBound;
 
     private MapBound() {
     }
 
-    private MapBound(double westBound, double southBound, double eastBound,
-        double northBound) {
+    private MapBound(Double westBound, Double southBound, Double eastBound,
+        Double northBound) {
         this.westBound = westBound;
         this.southBound = southBound;
         this.eastBound = eastBound;
@@ -26,15 +26,15 @@ public class MapBound {
             Double.parseDouble(eastBound), Double.parseDouble(northBound));
     }
 
-    public boolean isCover(double latitude, double longitude) {
+    public boolean isCover(Double latitude, Double longitude) {
         return isBetweenLatitude(latitude) && isBetweenLongitude(longitude);
     }
 
-    private boolean isBetweenLatitude(double convertLatitude) {
+    private boolean isBetweenLatitude(Double convertLatitude) {
         return convertLatitude >= southBound && convertLatitude <= northBound;
     }
 
-    private boolean isBetweenLongitude(double convertLongitude) {
+    private boolean isBetweenLongitude(Double convertLongitude) {
         return convertLongitude >= westBound && convertLongitude <= eastBound;
     }
 }

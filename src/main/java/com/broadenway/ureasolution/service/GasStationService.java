@@ -66,7 +66,7 @@ public class GasStationService {
             }
 
             try {
-                double position = Double.parseDouble(bound);
+                Double position = Double.parseDouble(bound);
                 if (position < 0) {
                     throw new IllegalArgumentException("경계 좌표는 0 이상이어야 합니다.");
                 }

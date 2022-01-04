@@ -14,8 +14,8 @@ public class GasStationDto {
 	private String openingHours;
 	private String stocks;
 	private String prices;
-	private double latitude;
-	private double longitude;
+	private Double latitude;
+	private Double longitude;
 	private String lastModfeDttm;
 
 	public GasStationDto() {
@@ -23,7 +23,7 @@ public class GasStationDto {
 
 	public GasStationDto(String stationCode, String name, String address, String telNo, String openingHours,
 		String stocks,
-		String prices, double latitude, double longitude, String lastModfeDttm) {
+		String prices, Double latitude, Double longitude, String lastModfeDttm) {
 		this.stationCode = stationCode;
 		this.name = name;
 		this.address = address;
