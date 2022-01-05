@@ -2,11 +2,11 @@ package com.broadenway.ureasolution.service;
 
 import com.broadenway.ureasolution.dto.MapBound;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +32,13 @@ public class GasStationService {
 
     public List<GasStationDto> findAllDtos() {
         List<GasStation> stations = cachingService.findAll();
+        return stations.stream()
+            .map(GasStationDto::from)
+            .collect(Collectors.toList());
+    }
+
+    public List<GasStationDto> findAllDtos(Pageable pageable) {
+        Page<GasStation> stations = cachingService.findAll(pageable);
         return stations.stream()
             .map(GasStationDto::from)
             .collect(Collectors.toList());

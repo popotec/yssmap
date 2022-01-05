@@ -5,6 +5,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +30,14 @@ import lombok.RequiredArgsConstructor;
 public class GasStationApi {
 
 	private final GasStationService gasStationService;
+	private final int PAGE_SIZE=30;
 
 	@Value("${kakao-map-key}")
 	private String kakaoMapKey;
 
 	@GetMapping
-	public ResponseEntity<List<GasStationDto>> getStations() {
-		List<GasStationDto> gasStationData = gasStationService.findAllDtos();
+	public ResponseEntity<List<GasStationDto>> getStations(@PageableDefault(size=PAGE_SIZE, sort="stationCode", direction = Direction.ASC) Pageable pageable) {
+		List<GasStationDto> gasStationData = gasStationService.findAllDtos(pageable);
 		return ResponseEntity.ok(gasStationData);
 	}
 
