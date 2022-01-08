@@ -1,6 +1,5 @@
 package com.broadenway.utils;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,12 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.broadenway.utils.gasdomain.GasStation;
-import com.broadenway.utils.gasdomain.GasStationRepository;
+import com.broadenway.ureasolution.domain.GasStation;
+import com.broadenway.ureasolution.dto.GasStationDto;
+import com.broadenway.ureasolution.repository.GasStationRepository;
 
 @Service
 @Transactional
-public class StoreGasStationAPIService implements ApplicationRunner {
+public class StoreGasStationAPIService{
 
 	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/uws/v1/inventory";
 	private static final int INIT_PAGE = 1;
@@ -42,31 +40,31 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 	}
 
 	@CacheEvict(value = "station", allEntries = true)
-	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		List<GasStation> gasStations = getStationsFromAPI();
+	public void fetchGasStationData() {
+		List<GasStationDto> gasStations = getStationsFromAPI();
 		storeDatabase(gasStations);
 	}
 
-	private void storeDatabase(List<GasStation> gasStations) {
-		for (GasStation gasStation : gasStations) {
+	private void storeDatabase(List<GasStationDto> gasStations) {
+		for (GasStationDto gasStation : gasStations) {
 			Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
 				gasStation.getStationCode());
+			GasStation requestGasStation = gasStation.toGasStation();
 			if (findGasStation.isPresent()) {
-				findGasStation.get().update(gasStation);
+				findGasStation.get().update(requestGasStation);
 				continue;
 			}
-			gasStationRepository.save(gasStation);
+			gasStationRepository.save(requestGasStation);
 		}
 	}
 
-	private List<GasStation> getStationsFromAPI() {
+	private List<GasStationDto> getStationsFromAPI() {
 
 		int page = INIT_PAGE;
 
 		Map result = requestAPICall(page);
 		int totalCount = (Integer)result.get("totalCount");
-		List<GasStation> gasStations = convertDataToGasStationEntity(result);
+		List<GasStationDto> gasStations = convertDataToGasStationEntity(result);
 
 		if (totalCount<=INIT_PER_PAGE) {
 			return gasStations;
@@ -100,11 +98,11 @@ public class StoreGasStationAPIService implements ApplicationRunner {
 		return restTemplate.exchange(urlBuilder, HttpMethod.GET, httpEntity, Map.class).getBody();
 	}
 
-	private List<GasStation> convertDataToGasStationEntity(Map responseBody) {
+	private List<GasStationDto> convertDataToGasStationEntity(Map responseBody) {
 		List<Map> extractedData = (ArrayList)responseBody.get("data");
 
 		return extractedData.stream().map(data ->
-			new GasStation(
+			new GasStationDto(
 				(String)data.get(ResponseFieldName.STATION_CODE.getName()),
 				(String)data.get(ResponseFieldName.NAME.getName()),
 				(String)data.get(ResponseFieldName.ADDRESS.getName()),
