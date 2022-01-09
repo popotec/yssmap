@@ -1,1 +1,3 @@
 rootProject.name = 'ureasolution'
+include 'yssmap-main'
+include 'yssmap-batch'
