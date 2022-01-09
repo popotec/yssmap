@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>요소수 맵</title>
+        <link>https://yssmap.com</link>
+        <description>요소수를 확보한 주유소 정보 및 보유량 제공</description>
+        <item>
+            <title>요소수 맵</title>
+            <link>https://yssmap.com/</link>
+            <description>지도로 한눈에 보는 주유소 거점별 요소수 현황 맵</description>
+            <pubDate>Tur, 25 Nov 2021 08:23:00 +0000</pubDate>
+            <link>https://yssmap.com/</link>
+        </item>
+        <item>
+            <title>요소수 보유량 목록 조회</title>
+            <link>https://yssmap.com/list-station</link>
+            <description>주유소 거점정보와 요소수 보유 현황 조회</description>
+            <pubDate>Tur, 25 Nov 2021 08:23:00 +0000</pubDate>
+            <link>https://yssmap.com/list-station</link>
+        </item>
+    </channel>
+</rss>

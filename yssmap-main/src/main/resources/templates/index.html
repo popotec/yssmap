@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>요소수소문: 가장 정확한 요소수맵</title>
+    <link rel="canonical" href="https://yssmap.com/stations">
+    <meta name="description" content="요소수 보유 주유소 보유 현황">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="요소수 보유 현황 조회">
+    <meta property="og:description" content="주유소별 요소수 보유 현황 조회">
+    <meta property="og:image" content="https://yssmap.com/images/icons8-car-200.png">
+    <meta property="og:url" content="https://yssmap.com/stations">
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="/js/datatables-simple-demo.js"></script>
+    <div th:replace="./fragments/header.html :: fragment-header"></div>
+
+</head>
+<body class="sb-nav-fixed">
+<div id="layoutSidenav">
+
+    <div th:replace="./fragments/sidebar.html :: fragment-nav"/>
+    <div th:replace="./fragments/sidebar.html :: fragment-sidebar"/>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <br />
+                <h5 style="font-weight: bold;color: cadetblue">주유소별 요소수 보유 현황</h5>
+                <h7 style="color: darkgray">업데이트 : 매시 30분 (방문 전 전화 확인을 추천합니다.)</h7>
+                <br />
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                            <tr class="table-row-head">
+                                <td>주유소 정보</td>
+                                <td>보유(ℓ)</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="gasStation : ${gasStations}">
+                                <td th:utext="'<span class=table-row-title>'+ ${gasStation.name} +'</span><br/>'
+                                + '(주소) '+${gasStation.address} + '<br/>'
+                                + '(전화) '+${gasStation.telNo} + '<br/>'"></td>
+                                 <td th:utext="'<span style=font-weight:bold;color:cadetblue>'+${gasStation.stocks} +'</span><br/>'
+                                + '(₩'+${gasStation.prices}+'/ℓ)'"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="./fragments/footer.html :: fragment-footer"/>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const datatablesSimple = document.getElementById('datatablesSimple');
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple, {
+            perPage: 200,
+            perPageSelect: false,
+            layout:{
+                bottom:""
+            }
+        });
+    }
+</script>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

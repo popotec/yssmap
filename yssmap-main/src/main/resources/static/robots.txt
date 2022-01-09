@@ -1,0 +1,15 @@
+User-Agent : *
+Disallow : /
+
+User-Agent : Googlebot
+Allow : /
+Sitemap: https://yssmap.com/sitemap.xml
+
+User-Agent : Yetibot
+Allow : /
+Sitemap: https://yssmap.com/sitemap.xml
+
+User-Agent : Daum
+Allow : /
+Sitemap: https://yssmap.com/sitemap.xml
+DaumWebMasterTool:95d3266fc401ba3bacb41a69b11f55a404664144e7609a814f68c0890b147c46:AfWVm7J7RFpH4KiqxuBceA==
