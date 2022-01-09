@@ -63,3 +63,19 @@
 API 호출 정보 : /api/stations/bounds
 - 개선 문제점 : center 좌표값을 이용해 반경에 있는 주유소 목록을 조회할 경우, zoom 변경에 따른 처리 불가
 - 개선 방법 : 현재 지도의 바운더리 좌표값을 이용하여 바운더리 내의 주유소만 반환하도록 변경
+
+### v업데이트 - 2021.1.4
+#### 데이터 캐싱 적용
+관련 이슈 : https://github.com/jerry92k/yssmap/issues/10
+
+### v업데이트 - 2021.1.5
+#### 페이징 적용
+관련 이슈 : https://github.com/jerry92k/yssmap/issues/6
+
+### v업데이트 - 2021.1.9
+- Spring Batch, Quartz
+  - 배치 작업 퀄리티 개선
+  - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/12
+- 모듈 분리
+  - 웹서비스 처리 : ```yssmap-main``` , 배치 처리 : ```yssmap-batch``` 모듈 분리  
+  - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/8
