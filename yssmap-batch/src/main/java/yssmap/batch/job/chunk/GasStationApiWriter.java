@@ -4,14 +4,14 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
 
-import lombok.extern.slf4j.Slf4j;
 import yssmap.batch.StoreGasStationAPIService;
 import yssmap.main.dto.GasStationDto;
 
-@Slf4j
+
 public class GasStationApiWriter implements ItemWriter<List<GasStationDto>> {
 
 	private final StoreGasStationAPIService storeGasStationAPIService;
+
 
 	public GasStationApiWriter(StoreGasStationAPIService storeGasStationAPIService) {
 		this.storeGasStationAPIService = storeGasStationAPIService;

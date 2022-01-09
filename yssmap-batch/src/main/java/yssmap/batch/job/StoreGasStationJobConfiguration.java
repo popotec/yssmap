@@ -2,6 +2,8 @@ package yssmap.batch.job;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -23,7 +25,6 @@ import yssmap.batch.job.chunk.GasStationApiReader;
 import yssmap.batch.job.chunk.GasStationApiWriter;
 import yssmap.main.dto.GasStationDto;
 
-@Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class StoreGasStationJobConfiguration {
@@ -37,6 +38,7 @@ public class StoreGasStationJobConfiguration {
 		return jobBuilderFactory.get("storeGasStationJob")
 			.start(step())
 			.build();
+
 	}
 
 	@Bean
