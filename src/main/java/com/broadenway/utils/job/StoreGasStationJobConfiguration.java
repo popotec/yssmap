@@ -25,9 +25,8 @@ public class StoreGasStationJobConfiguration {
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 	private final StoreGasStationAPIService storeGasStationAPIService;
-	//
+
 	// @Bean("jobParameter")
-	//
 	// public DateJobParameter jobParameter(@Value("#{jobParameters[createDate]}") String createDateStr){
 	// 	return new DateJobParameter(createDateStr); // (1)
 	// }
@@ -42,7 +41,7 @@ public class StoreGasStationJobConfiguration {
 
 	@Bean
 	@JobScope
-	public Step step(@Value("#{jobParameters[requestDate]}") String requestDate) {
+	public Step step(@Value("#{jobParameters[datetime]}") String requestDate) {
 		return stepBuilderFactory.get("step")
 			.tasklet(storeTask(null))
 			.build();
@@ -50,7 +49,7 @@ public class StoreGasStationJobConfiguration {
 
 	@Bean
 	@StepScope
-	public Tasklet storeTask(@Value("#{jobParameters[requestDate]}") String requestDate){
+	public Tasklet storeTask(@Value("#{jobParameters[datetime]}") String requestDate){
 		return (contribution, chunkContext) -> {
 			log.info(">>>>> 배치 수행 시작");
 			storeGasStationAPIService.fetchGasStationData();
