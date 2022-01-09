@@ -1,1 +1,7 @@
 
+[submodule "yssmap-main/src/main/resources/config"]
+	path = yssmap-main/src/main/resources/config
+	url = https://github.com/jerry92k/ureasolution-config.git
+[submodule "yssmap-batch/src/main/resources/config"]
+	path = yssmap-batch/src/main/resources/config
+	url = https://github.com/jerry92k/yssmap-batch-config.git
