@@ -1,5 +1,7 @@
 package yssmap.batch.job;
 
+import java.util.List;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -7,6 +9,8 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +19,9 @@ import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import yssmap.batch.StoreGasStationAPIService;
+import yssmap.batch.job.chunk.GasStationApiReader;
+import yssmap.batch.job.chunk.GasStationApiWriter;
+import yssmap.main.dto.GasStationDto;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,35 +32,32 @@ public class StoreGasStationJobConfiguration {
 	private final StepBuilderFactory stepBuilderFactory;
 	private final StoreGasStationAPIService storeGasStationAPIService;
 
-	// @Bean("jobParameter")
-	// public DateJobParameter jobParameter(@Value("#{jobParameters[createDate]}") String createDateStr){
-	// 	return new DateJobParameter(createDateStr); // (1)
-	// }
-
-
 	@Bean
 	public Job job() {
 		return jobBuilderFactory.get("storeGasStationJob")
-			.start(step(null))
+			.start(step())
 			.build();
 	}
 
 	@Bean
 	@JobScope
-	public Step step(@Value("#{jobParameters[datetime]}") String requestDate) {
+	public Step step() {
 		return stepBuilderFactory.get("step")
-			.tasklet(storeTask(null))
+			.<List<GasStationDto>,List<GasStationDto>>chunk(1)
+			.reader(gasStationApiReader())
+			.writer(gasStationApiWriter())
 			.build();
 	}
 
 	@Bean
 	@StepScope
-	public Tasklet storeTask(@Value("#{jobParameters[datetime]}") String requestDate){
-		return (contribution, chunkContext) -> {
-			log.info(">>>>> 배치 수행 시작");
-			storeGasStationAPIService.fetchGasStationData();
-			log.info(">>>>> 배치 수행 종료");
-			return RepeatStatus.FINISHED;
-		};
+	public ItemReader<List<GasStationDto>> gasStationApiReader() {
+		return new GasStationApiReader(storeGasStationAPIService);
+	}
+
+	@Bean
+	@StepScope
+	public ItemWriter<List<GasStationDto>> gasStationApiWriter() {
+		return new GasStationApiWriter(storeGasStationAPIService);
 	}
 }

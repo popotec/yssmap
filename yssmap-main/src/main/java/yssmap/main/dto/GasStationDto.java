@@ -1,5 +1,8 @@
 package yssmap.main.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import yssmap.main.domain.GasStation;
 
 import lombok.Data;
@@ -39,6 +42,12 @@ public class GasStationDto {
 		return new GasStationDto(gasStation.getStationCode(), gasStation.getName(), gasStation.getAddress(),
 			gasStation.getTelNo(), gasStation.getOpeningHours(), gasStation.getStocks(), gasStation.getPrices(),
 			gasStation.getLatitude(), gasStation.getLongitude(), gasStation.getLastModfeDttm());
+	}
+
+	public static List<GasStation> toGasStationList(List<GasStationDto> gasStationDtos) {
+		return gasStationDtos.stream()
+			.map(GasStationDto::toGasStation)
+			.collect(Collectors.toList());
 	}
 
 	public GasStation toGasStation() {

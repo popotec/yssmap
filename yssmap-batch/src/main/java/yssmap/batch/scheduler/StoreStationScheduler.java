@@ -18,8 +18,8 @@ public class StoreStationScheduler {
 	private final Job job;  // tutorialJob
 	private final JobLauncher jobLauncher;
 
-	// 5초마다 실행
-	@Scheduled(fixedDelay = 5 * 1000L)
+	// 1시간 마다 실행
+	@Scheduled(fixedDelay = 60 *60 * 1000L)
 	public void executeJob () {
 		try {
 			jobLauncher.run(

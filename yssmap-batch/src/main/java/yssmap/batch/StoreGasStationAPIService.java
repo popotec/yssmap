@@ -13,7 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,13 +21,13 @@ import yssmap.main.domain.GasStation;
 import yssmap.main.domain.GasStationRepository;
 import yssmap.main.dto.GasStationDto;
 
-@Service
+@Component
 @Transactional
-public class StoreGasStationAPIService{
+public class StoreGasStationAPIService {
 
 	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/uws/v1/inventory";
-	private static final int INIT_PAGE = 1;
-	private static final int INIT_PER_PAGE = 200;
+	public static final int INIT_PAGE = 1;
+	public static final int INIT_PER_PAGE = 200;
 
 	@Value("${dataportal.servicekey}")
 	private String serviceKey;
@@ -40,12 +40,7 @@ public class StoreGasStationAPIService{
 	}
 
 	@CacheEvict(value = "station", allEntries = true)
-	public void fetchGasStationData() {
-		List<GasStationDto> gasStations = getStationsFromAPI();
-		storeDatabase(gasStations);
-	}
-
-	private void storeDatabase(List<GasStationDto> gasStations) {
+	public void storeDatabase(List<GasStationDto> gasStations) {
 		for (GasStationDto gasStation : gasStations) {
 			Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
 				gasStation.getStationCode());
@@ -58,25 +53,18 @@ public class StoreGasStationAPIService{
 		}
 	}
 
-	private List<GasStationDto> getStationsFromAPI() {
-
-		int page = INIT_PAGE;
-
+	public List<GasStationDto> fetchStations(int page){
 		Map result = requestAPICall(page);
-		int totalCount = (Integer)result.get("totalCount");
-		List<GasStationDto> gasStations = convertDataToGasStationEntity(result);
+		return convertDataToGasStationEntity(result);
+	}
 
-		if (totalCount<=INIT_PER_PAGE) {
-			return gasStations;
-		}
+	public int getTotalPage(){
+		return (int)Math.ceil((double)getTotalCount() / INIT_PER_PAGE);
+	}
 
-		int totalPage = (int)Math.ceil((double)totalCount / 200);
-		for (int i = 2; i <= totalPage; i++) {
-			Map nextResult = requestAPICall(i);
-			gasStations.addAll(convertDataToGasStationEntity(nextResult));
-		}
-
-		return gasStations;
+	private int getTotalCount(){
+		Map result = requestAPICall(INIT_PAGE);
+		return (Integer)result.get("totalCount");
 	}
 
 	private Map requestAPICall(int page) {
