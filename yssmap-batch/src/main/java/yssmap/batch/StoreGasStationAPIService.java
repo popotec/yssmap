@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -56,22 +59,30 @@ public class StoreGasStationAPIService {
 		}
 	}
 
-	public List<GasStationDto> fetchStations(int page){
+	public List<GasStationDto> fetchStations(int page) {
 		Map result = requestAPICall(page);
 		return convertDataToGasStationEntity(result);
 	}
 
-	public int getTotalPage(){
+	public int getTotalPage() {
 		return (int)Math.ceil((double)getTotalCount() / INIT_PER_PAGE);
 	}
 
-	private int getTotalCount(){
+	private int getTotalCount() {
 		Map result = requestAPICall(INIT_PAGE);
 		return (Integer)result.get("totalCount");
 	}
 
 	private Map requestAPICall(int page) {
-		RestTemplate restTemplate = new RestTemplate();
+		HttpClient httpClient = HttpClientBuilder.create()
+			.setMaxConnTotal(100)
+			.setMaxConnPerRoute(1) //멀티 스레드로 돌리면 스레드 갯수만큼 할당하면 될 것 같다.
+			.build();
+
+		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+		factory.setConnectTimeout(10 * 1000);
+		factory.setReadTimeout(10 * 1000);
+		RestTemplate restTemplate = new RestTemplate(factory);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -80,13 +91,15 @@ public class StoreGasStationAPIService {
 
 		HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
-		String urlBuilder = BASE_REQUEST_URL +
-			"?page=" + page +
-			"&perPage=" + INIT_PER_PAGE +
-			"&serviceKey=" + serviceKey;
+		StringBuilder sb = new StringBuilder();
+		sb.append(BASE_REQUEST_URL)
+			.append("?page=").append(page)
+			.append("&perPage=").append(INIT_PER_PAGE)
+			.append("&serviceKey=").append(serviceKey);
+		String requestUrl = sb.toString();
 
-		System.out.println(urlBuilder);
-		return restTemplate.exchange(urlBuilder, HttpMethod.GET, httpEntity, Map.class).getBody();
+		System.out.println(requestUrl);
+		return restTemplate.exchange(requestUrl, HttpMethod.GET, httpEntity, Map.class).getBody();
 	}
 
 	private List<GasStationDto> convertDataToGasStationEntity(Map responseBody) {
