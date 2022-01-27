@@ -1,5 +1,8 @@
-package yssmap.batch;
+package yssmap.stationapi;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +11,9 @@ import java.util.stream.Collectors;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,17 +21,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.extern.slf4j.Slf4j;
 import yssmap.main.domain.GasStation;
 import yssmap.main.domain.GasStationRepository;
 import yssmap.main.dto.GasStationDto;
 
-@Component
+@Service
 @Transactional
-public class StoreGasStationAPIService {
+public class GasStationAPIService {
 
 	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/uws/v1/inventory";
 	public static final int INIT_PAGE = 1;
@@ -38,11 +40,19 @@ public class StoreGasStationAPIService {
 	@Value("${dataportal.servicekey}")
 	private String serviceKey;
 
-	@Autowired
 	private final GasStationRepository gasStationRepository;
+	private final RestTemplate restTemplate;
 
-	public StoreGasStationAPIService(GasStationRepository gasStationRepository) {
+	@Autowired
+	public GasStationAPIService(GasStationRepository gasStationRepository,
+		RestTemplateBuilder restTemplateBuilder) {
 		this.gasStationRepository = gasStationRepository;
+		this.restTemplate = initRestTemplate(restTemplateBuilder);
+	}
+
+	private RestTemplate initRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+		HttpComponentsClientHttpRequestFactory factory = makeRequestFactory(makeHttpClient());
+		return restTemplateBuilder.requestFactory(()->factory).build();
 	}
 
 	@CacheEvict(value = "station", allEntries = true)
@@ -60,46 +70,62 @@ public class StoreGasStationAPIService {
 	}
 
 	public List<GasStationDto> fetchStations(int page) {
-		Map result = requestAPICall(page);
+		return fetchStations(page,INIT_PER_PAGE);
+	}
+
+	public List<GasStationDto> fetchStations(int page, int pageSize) {
+		Map result = requestAPICall(page, pageSize);
 		return convertDataToGasStationEntity(result);
 	}
 
 	public int getTotalPage() {
-		return (int)Math.ceil((double)getTotalCount() / INIT_PER_PAGE);
+		return getTotalPage(INIT_PER_PAGE);
 	}
 
-	private int getTotalCount() {
-		Map result = requestAPICall(INIT_PAGE);
+	public int getTotalPage(int pageSize) {
+		return (int)Math.ceil((double)getTotalCount(pageSize) / pageSize);
+	}
+
+	private int getTotalCount(int pageSize) {
+		Map result = requestAPICall(INIT_PAGE, pageSize);
 		return (Integer)result.get("totalCount");
 	}
 
-	private Map requestAPICall(int page) {
-		HttpClient httpClient = HttpClientBuilder.create()
-			.setMaxConnTotal(100)
-			.setMaxConnPerRoute(1) //멀티 스레드로 돌리면 스레드 갯수만큼 할당하면 될 것 같다.
-			.build();
+	private Map requestAPICall(int page, int pageSize) {
+		String requestUrl = getApiPath(page, pageSize);
+		System.out.println(requestUrl);
+		return restTemplate.exchange(requestUrl, HttpMethod.GET, getHeaders(), Map.class).getBody();
+	}
 
+	private HttpComponentsClientHttpRequestFactory makeRequestFactory(HttpClient httpClient) {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		factory.setConnectTimeout(10 * 1000);
 		factory.setReadTimeout(10 * 1000);
-		RestTemplate restTemplate = new RestTemplate(factory);
+		return factory;
+	}
 
+	private HttpClient makeHttpClient() {
+		return HttpClientBuilder.create()
+			.setMaxConnTotal(100)
+			.setMaxConnPerRoute(1) //멀티 스레드로 돌리면 스레드 갯수만큼 할당하면 될 것 같다.
+			.build();
+	}
+
+	private HttpEntity<?> getHeaders() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		httpHeaders.set(HttpHeaders.AUTHORIZATION, serviceKey);
+		return new HttpEntity<>(httpHeaders);
+	}
 
-		HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-
+	private String getApiPath(int page, int pageSize) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(BASE_REQUEST_URL)
 			.append("?page=").append(page)
-			.append("&perPage=").append(INIT_PER_PAGE)
+			.append("&perPage=").append(pageSize)
 			.append("&serviceKey=").append(serviceKey);
-		String requestUrl = sb.toString();
-
-		System.out.println(requestUrl);
-		return restTemplate.exchange(requestUrl, HttpMethod.GET, httpEntity, Map.class).getBody();
+		return sb.toString();
 	}
 
 	private List<GasStationDto> convertDataToGasStationEntity(Map responseBody) {

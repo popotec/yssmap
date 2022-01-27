@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableBatchProcessing
 @EnableScheduling
 @SpringBootApplication
-public class StoreGasStationInfoMain {
+public class Application {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(StoreGasStationInfoMain.class).web(WebApplicationType.NONE).run(args);
+		new SpringApplicationBuilder(Application.class).web(WebApplicationType.NONE).run(args);
 	}
 }

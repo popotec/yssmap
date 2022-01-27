@@ -9,18 +9,17 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import lombok.extern.slf4j.Slf4j;
-import yssmap.batch.StoreGasStationAPIService;
+import yssmap.stationapi.GasStationAPIService;
 import yssmap.main.dto.GasStationDto;
 
 public class GasStationApiReader implements ItemReader<List<GasStationDto>> {
 
 	private static final Logger logger = LoggerFactory.getLogger("file");
-	private final StoreGasStationAPIService storeGasStationAPIService;
+	private final GasStationAPIService storeGasStationAPIService;
 	private final int maxPage;
 	private int page = 0; // TODO: ThreadLocal로 변경
 
-	public GasStationApiReader(StoreGasStationAPIService storeGasStationAPIService) {
+	public GasStationApiReader(GasStationAPIService storeGasStationAPIService) {
 		this.storeGasStationAPIService = storeGasStationAPIService;
 		maxPage = storeGasStationAPIService.getTotalPage();
 	}

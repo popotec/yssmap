@@ -1,4 +1,4 @@
-package yssmap.batch;
+package yssmap.stationapi;
 
 public enum ResponseFieldName {
 
