@@ -43,6 +43,8 @@ subprojects {
 		testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
 		// db
+		implementation 'org.flywaydb:flyway-core:7.15.0'
+
 		runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 		runtimeOnly 'mysql:mysql-connector-java'
 		runtimeOnly 'com.h2database:h2'

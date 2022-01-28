@@ -1,5 +1,6 @@
 package yssmap.main.domain;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -31,9 +32,14 @@ public class GasStation {
 	private String stocks;
 
 	private String prices;
+
 	private Double latitude;
+
 	private Double longitude;
+
 	private String lastModfeDttm;
+
+	private LocalDateTime deletedAt;
 
 	protected GasStation() {
 	}
