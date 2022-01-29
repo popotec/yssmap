@@ -1,8 +1,5 @@
 package yssmap.stationapi;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -58,7 +54,7 @@ public class GasStationAPIService {
 	@CacheEvict(value = "station", allEntries = true)
 	public void storeDatabase(List<GasStationDto> gasStations) {
 		for (GasStationDto gasStation : gasStations) {
-			Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
+			Optional<GasStation> findGasStation = gasStationRepository.findByStationCodeAndDeletedAtIsNull(
 				gasStation.getStationCode());
 			GasStation requestGasStation = gasStation.toGasStation();
 			if (findGasStation.isPresent()) {

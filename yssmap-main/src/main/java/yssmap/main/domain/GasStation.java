@@ -70,6 +70,10 @@ public class GasStation {
 		this.lastModfeDttm = updateInfo.lastModfeDttm;
 	}
 
+	public void delete(){
+		this.deletedAt=LocalDateTime.now();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o){

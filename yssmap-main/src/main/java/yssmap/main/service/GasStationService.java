@@ -58,14 +58,6 @@ public class GasStationService {
             .collect(Collectors.toList());
     }
 
-    protected List<GasStation> findAllInMapBounds(String westBound, String southBound,
-        String eastBound, String northBound) {
-        validateBounds(westBound, eastBound, southBound, northBound);
-
-        return gasStationRepository.findAllInBoundary(southBound, northBound
-            , westBound, eastBound);
-    }
-
     private void validateBounds(String... bounds) {
         for (String bound : bounds) {
             if (bound == null) {

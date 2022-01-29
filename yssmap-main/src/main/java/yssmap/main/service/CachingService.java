@@ -19,11 +19,11 @@ public class CachingService {
 
     @Cacheable(value = "station")
     public List<GasStation> findAll() {
-        return gasStationRepository.findAll();
+        return gasStationRepository.findAllByDeletedAtIsNull();
     }
 
     public Page<GasStation> findAll(Pageable pageable) {
-        return gasStationRepository.findAll(pageable);
+        return gasStationRepository.findAllByDeletedAtIsNull(pageable);
 
     }
 }
