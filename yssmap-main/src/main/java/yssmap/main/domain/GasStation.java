@@ -72,6 +72,7 @@ public class GasStation {
 		this.latitude = updateInfo.latitude;
 		this.longitude = updateInfo.longitude;
 		this.lastModfeDttm = updateInfo.lastModfeDttm;
+		this.deletedAt=null;
 
 		return true;
 	}
