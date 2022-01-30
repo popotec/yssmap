@@ -2,6 +2,8 @@
 
 ## Live demo : https://yssmap.com/
 
+![요소수맵](https://user-images.githubusercontent.com/62507373/151695704-e101eaae-ab60-4568-bd53-af3fa665b22e.png)
+
 <br>
 
 ## 기능
@@ -64,13 +66,19 @@ API 호출 정보 : /api/stations/bounds
 - 개선 문제점 : center 좌표값을 이용해 반경에 있는 주유소 목록을 조회할 경우, zoom 변경에 따른 처리 불가
 - 개선 방법 : 현재 지도의 바운더리 좌표값을 이용하여 바운더리 내의 주유소만 반환하도록 변경
 
+---
+
 ### v업데이트 - 2022.1.4
 #### 데이터 캐싱 적용
 관련 이슈 : https://github.com/jerry92k/yssmap/issues/10
 
+---
+
 ### v업데이트 - 2022.1.5
 #### 페이징 적용
 관련 이슈 : https://github.com/jerry92k/yssmap/issues/6
+
+---
 
 ### v업데이트 - 2022.1.9
 - Spring Batch, Quartz
@@ -79,3 +87,13 @@ API 호출 정보 : /api/stations/bounds
 - 모듈 분리
   - 웹서비스 처리 : ```yssmap-main``` , 배치 처리 : ```yssmap-batch``` 모듈 분리  
   - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/8
+
+---
+### v업데이트 - 2022.1.30
+- deleted_at (삭제일시) 칼럼 추가
+  - 유효하지 않은 데이터는 삭제일시를 업데이트
+  - 클라이언트가 api를 요청하면, 삭제되지 않은 데이터만(삭제일시 없는) 반환
+  - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/16
+- 배치건수 로깅
+  - Spring Batch에서 처리하는 chunk 단위로 1) 신규건수 2) 변경된 건수 3) 변경없는 건수 로깅
+  - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/17
