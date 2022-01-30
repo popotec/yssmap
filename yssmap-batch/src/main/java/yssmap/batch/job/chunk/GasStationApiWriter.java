@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
 
-import yssmap.stationapi.GasStationAPIService;
+import yssmap.stationapi.service.GasStationAPIService;
 import yssmap.main.dto.GasStationDto;
 
 
@@ -20,6 +20,6 @@ public class GasStationApiWriter implements ItemWriter<List<GasStationDto>> {
 	@Override
 	public void write(List<? extends List<GasStationDto>> items) throws Exception {
 		items.stream()
-			.forEach(gasStations -> storeGasStationAPIService.storeDatabase(gasStations));
+			.forEach(gasStations -> storeGasStationAPIService.storeGasStations(gasStations));
 	}
 }

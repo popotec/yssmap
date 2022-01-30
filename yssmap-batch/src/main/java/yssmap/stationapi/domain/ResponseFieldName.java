@@ -1,4 +1,4 @@
-package yssmap.stationapi;
+package yssmap.stationapi.domain;
 
 public enum ResponseFieldName {
 

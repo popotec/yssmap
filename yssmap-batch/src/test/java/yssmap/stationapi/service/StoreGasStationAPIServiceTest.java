@@ -1,4 +1,4 @@
-package yssmap.stationapi;
+package yssmap.stationapi.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;

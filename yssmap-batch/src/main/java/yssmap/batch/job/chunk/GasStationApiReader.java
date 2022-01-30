@@ -5,11 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 
-import yssmap.stationapi.GasStationAPIService;
+import yssmap.stationapi.service.GasStationAPIService;
 import yssmap.main.dto.GasStationDto;
 
 public class GasStationApiReader implements ItemReader<List<GasStationDto>> {
@@ -25,8 +22,7 @@ public class GasStationApiReader implements ItemReader<List<GasStationDto>> {
 	}
 
 	@Override
-	public List<GasStationDto> read() throws Exception, UnexpectedInputException, ParseException,
-		NonTransientResourceException {
+	public List<GasStationDto> read() {
 		page++;
 		if (page > maxPage) {
 			return null;

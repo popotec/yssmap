@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
-import yssmap.stationapi.GasStationAPIService;
+import yssmap.stationapi.service.GasStationAPIService;
 import yssmap.batch.job.chunk.GasStationApiReader;
 import yssmap.batch.job.chunk.GasStationApiWriter;
 import yssmap.main.dto.GasStationDto;
@@ -32,7 +32,6 @@ public class StoreGasStationJobConfiguration {
 		return jobBuilderFactory.get("storeGasStationJob")
 			.start(step())
 			.build();
-
 	}
 
 	@Bean

@@ -21,6 +21,9 @@ public interface GasStationRepository extends JpaRepository<GasStation, String> 
 
 	Optional<GasStation> findByStationCodeAndDeletedAtIsNull(String stationCode);
 
+	Optional<GasStation> findByStationCode(String stationCode);
+
 	List<GasStation> findAllByDeletedAtIsNull();
+
 	Page<GasStation> findAllByDeletedAtIsNull(Pageable pageable);
 }

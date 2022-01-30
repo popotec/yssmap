@@ -58,7 +58,11 @@ public class GasStation {
 		this.lastModfeDttm = lastModfeDttm;
 	}
 
-	public void update(GasStation updateInfo){
+	// update를 수행하면 true를 반환, 최종수정일시가 동일하여 변경된게 없으면 update 하지않고 false 반환
+	public boolean update(GasStation updateInfo){
+		if(isSame(updateInfo)){
+			return false;
+		}
 		this.name = updateInfo.name;
 		this.address = updateInfo.address;
 		this.telNo = updateInfo.telNo;
@@ -68,6 +72,12 @@ public class GasStation {
 		this.latitude = updateInfo.latitude;
 		this.longitude = updateInfo.longitude;
 		this.lastModfeDttm = updateInfo.lastModfeDttm;
+
+		return true;
+	}
+
+	private boolean isSame(GasStation updateInfo){
+		return this.lastModfeDttm.equals(updateInfo.lastModfeDttm);
 	}
 
 	public void delete(){

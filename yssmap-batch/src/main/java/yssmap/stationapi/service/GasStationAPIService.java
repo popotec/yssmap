@@ -1,4 +1,4 @@
-package yssmap.stationapi;
+package yssmap.stationapi.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -24,14 +26,19 @@ import org.springframework.web.client.RestTemplate;
 import yssmap.main.domain.GasStation;
 import yssmap.main.domain.GasStationRepository;
 import yssmap.main.dto.GasStationDto;
+import yssmap.stationapi.domain.ApiFetchResult;
+import yssmap.stationapi.domain.ResponseFieldName;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class GasStationAPIService {
 
+	private static final Logger logger = LoggerFactory.getLogger("file");
 	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/uws/v1/inventory";
 	public static final int INIT_PAGE = 1;
 	public static final int INIT_PER_PAGE = 200;
+
+	private ThreadLocal<ApiFetchResult> apiFetchResult = new ThreadLocal<>();
 
 	@Value("${dataportal.servicekey}")
 	private String serviceKey;
@@ -44,29 +51,70 @@ public class GasStationAPIService {
 		RestTemplateBuilder restTemplateBuilder) {
 		this.gasStationRepository = gasStationRepository;
 		this.restTemplate = initRestTemplate(restTemplateBuilder);
+		initApiFetchResult();
+	}
+
+	private void initApiFetchResult() {
+		apiFetchResult.set(new ApiFetchResult());
 	}
 
 	private RestTemplate initRestTemplate(RestTemplateBuilder restTemplateBuilder) {
 		HttpComponentsClientHttpRequestFactory factory = makeRequestFactory(makeHttpClient());
-		return restTemplateBuilder.requestFactory(()->factory).build();
+		return restTemplateBuilder.requestFactory(() -> factory).build();
 	}
 
+	@Transactional
 	@CacheEvict(value = "station", allEntries = true)
-	public void storeDatabase(List<GasStationDto> gasStations) {
-		for (GasStationDto gasStation : gasStations) {
-			Optional<GasStation> findGasStation = gasStationRepository.findByStationCodeAndDeletedAtIsNull(
-				gasStation.getStationCode());
-			GasStation requestGasStation = gasStation.toGasStation();
-			if (findGasStation.isPresent()) {
-				findGasStation.get().update(requestGasStation);
-				continue;
-			}
-			gasStationRepository.save(requestGasStation);
+	public void storeGasStations(List<GasStationDto> gasStations) {
+		initApiFetchResult();
+		for(GasStationDto gasStationDto : gasStations){
+			storeGasStation(gasStationDto);
 		}
+		recordFetchResult();
+	}
+
+	private void recordFetchResult() {
+		ApiFetchResult apiFetchResult = this.apiFetchResult.get();
+		logger.info(apiFetchResult.toString());
+	}
+
+	private void storeGasStation(GasStationDto gasStationDto) {
+		GasStation requestGasStation = gasStationDto.toGasStation();
+		Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
+			gasStationDto.getStationCode());
+
+		if(findGasStation.isEmpty()){
+			gasStationRepository.save(requestGasStation);
+			increaseCountOfCreated();
+			return;
+		}
+
+		GasStation storedGasStation = findGasStation.get();
+		boolean isChanged = storedGasStation.update(requestGasStation);
+		if(isChanged){
+			increaseCountOfChange();
+			return;
+		}
+		increaseCountOfNotChanged();
+	}
+
+	private void increaseCountOfChange(){
+		ApiFetchResult storedResult = apiFetchResult.get();
+		storedResult.increaseCountOfChanged();
+	}
+
+	private void increaseCountOfNotChanged(){
+		ApiFetchResult storedResult = apiFetchResult.get();
+		storedResult.increaseCountOfNotChanged();
+	}
+
+	private void increaseCountOfCreated(){
+		ApiFetchResult storedResult = apiFetchResult.get();
+		storedResult.increaseCountOfCreated();
 	}
 
 	public List<GasStationDto> fetchStations(int page) {
-		return fetchStations(page,INIT_PER_PAGE);
+		return fetchStations(page, INIT_PER_PAGE);
 	}
 
 	public List<GasStationDto> fetchStations(int page, int pageSize) {
