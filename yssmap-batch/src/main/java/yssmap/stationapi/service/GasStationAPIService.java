@@ -51,7 +51,6 @@ public class GasStationAPIService {
 		RestTemplateBuilder restTemplateBuilder) {
 		this.gasStationRepository = gasStationRepository;
 		this.restTemplate = initRestTemplate(restTemplateBuilder);
-		initApiFetchResult();
 	}
 
 	private void initApiFetchResult() {
@@ -71,6 +70,11 @@ public class GasStationAPIService {
 			storeGasStation(gasStationDto);
 		}
 		recordFetchResult();
+		releaseResult();
+	}
+
+	private void releaseResult() {
+		apiFetchResult.remove();
 	}
 
 	private void recordFetchResult() {
