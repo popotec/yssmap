@@ -18,7 +18,7 @@ public class GasStationApiWriter implements ItemWriter<List<GasStationDto>> {
 	}
 
 	@Override
-	public void write(List<? extends List<GasStationDto>> items) throws Exception {
+	public void write(List<? extends List<GasStationDto>> items) {
 		items.stream()
 			.forEach(gasStations -> storeGasStationAPIService.storeGasStations(gasStations));
 	}
