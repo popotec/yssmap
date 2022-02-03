@@ -41,6 +41,7 @@ public class StoreStationScheduler {
 		}
 	}
 
+	// 매일 0시 1초 실행
 	@Scheduled(cron = "1 0 0 * * *")
 	public void executeDeleteOldStationsJob () {
 		try {
