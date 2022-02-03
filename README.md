@@ -97,3 +97,14 @@ API 호출 정보 : /api/stations/bounds
 - 배치건수 로깅
   - Spring Batch에서 처리하는 chunk 단위로 1) 신규건수 2) 변경된 건수 3) 변경없는 건수 로깅
   - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/17
+
+---
+### v업데이트 - 2022.2.3
+- 업데이트 되지 않고 오래된 데이터 삭제일시 추가 배치 
+  - 오래된 데이터 기준 : 14일이 지난 데이터
+  - 매일 0시(자정) 1초 배치 실행
+  - 관련 이슈 : https://github.com/jerry92k/yssmap/issues/16
+- 최종수정일시 칼럼 타입 변경
+  - String 타입 -> LocalDateTime (DB에서는 varchar -> datetime)
+  - 공공 api에서 데이터를 받아와 넣을때 String을 LocalDateTime 포맷으로 변경
+  - 변경 사유 : 최종수정일시로 비교 검색할 때, 데이터의 본질이 날짜형식이므로 임의로 문자열 비교를 하지 않도록 변경
