@@ -28,16 +28,16 @@ public class StoreGasStationJobConfiguration {
 	private final GasStationAPIService storeGasStationAPIService;
 
 	@Bean
-	public Job job() {
+	public Job storeGasStationJob() {
 		return jobBuilderFactory.get("storeGasStationJob")
-			.start(step())
+			.start(storeGasStationStep())
 			.build();
 	}
 
 	@Bean
 	@JobScope
-	public Step step() {
-		return stepBuilderFactory.get("step")
+	public Step storeGasStationStep() {
+		return stepBuilderFactory.get("storeGasStationStep")
 			.<List<GasStationDto>,List<GasStationDto>>chunk(1)
 			.reader(gasStationApiReader())
 			.writer(gasStationApiWriter())

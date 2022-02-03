@@ -37,7 +37,7 @@ public class GasStation {
 
 	private Double longitude;
 
-	private String lastModfeDttm;
+	private LocalDateTime lastModfeDttm;
 
 	private LocalDateTime deletedAt;
 
@@ -45,7 +45,7 @@ public class GasStation {
 	}
 
 	public GasStation(String stationCode, String name, String address, String telNo, String openingHours,
-		String stocks, String prices, Double latitude, Double longitude, String lastModfeDttm) {
+		String stocks, String prices, Double latitude, Double longitude, LocalDateTime lastModfeDttm) {
 		this.stationCode = stationCode;
 		this.name = name;
 		this.address = address;

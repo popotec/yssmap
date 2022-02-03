@@ -1,5 +1,6 @@
 package yssmap.stationapi.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class GasStationAPIService {
 	@CacheEvict(value = "station", allEntries = true)
 	public void storeGasStations(List<GasStationDto> gasStations) {
 		initApiFetchResult();
-		for(GasStationDto gasStationDto : gasStations){
+		for (GasStationDto gasStationDto : gasStations) {
 			storeGasStation(gasStationDto);
 		}
 		recordFetchResult();
@@ -87,7 +88,7 @@ public class GasStationAPIService {
 		Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
 			gasStationDto.getStationCode());
 
-		if(findGasStation.isEmpty()){
+		if (findGasStation.isEmpty()) {
 			gasStationRepository.save(requestGasStation);
 			increaseCountOfCreated();
 			return;
@@ -95,24 +96,24 @@ public class GasStationAPIService {
 
 		GasStation storedGasStation = findGasStation.get();
 		boolean isChanged = storedGasStation.update(requestGasStation);
-		if(isChanged){
+		if (isChanged) {
 			increaseCountOfChange();
 			return;
 		}
 		increaseCountOfNotChanged();
 	}
 
-	private void increaseCountOfChange(){
+	private void increaseCountOfChange() {
 		ApiFetchResult storedResult = apiFetchResult.get();
 		storedResult.increaseCountOfChanged();
 	}
 
-	private void increaseCountOfNotChanged(){
+	private void increaseCountOfNotChanged() {
 		ApiFetchResult storedResult = apiFetchResult.get();
 		storedResult.increaseCountOfNotChanged();
 	}
 
-	private void increaseCountOfCreated(){
+	private void increaseCountOfCreated() {
 		ApiFetchResult storedResult = apiFetchResult.get();
 		storedResult.increaseCountOfCreated();
 	}
@@ -190,7 +191,12 @@ public class GasStationAPIService {
 				(String)data.get(ResponseFieldName.PRICE.getName()),
 				Double.parseDouble((String)data.get(ResponseFieldName.LATITUDE.getName())),
 				Double.parseDouble((String)data.get(ResponseFieldName.LONGITUDE.getName())),
-				(String)data.get(ResponseFieldName.STD_DT.getName())
+				convertToLocalDateTime((String)data.get(ResponseFieldName.STD_DT.getName()))
 			)).collect(Collectors.toList());
+	}
+
+	private static LocalDateTime convertToLocalDateTime(String date) {
+		StringBuilder sb = new StringBuilder(date.substring(0, 10)).append("T").append(date.substring(11));
+		return LocalDateTime.parse(sb.toString());
 	}
 }

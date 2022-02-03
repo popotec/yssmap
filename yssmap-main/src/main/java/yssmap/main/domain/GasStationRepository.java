@@ -1,11 +1,13 @@
 package yssmap.main.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,4 +28,8 @@ public interface GasStationRepository extends JpaRepository<GasStation, String> 
 	List<GasStation> findAllByDeletedAtIsNull();
 
 	Page<GasStation> findAllByDeletedAtIsNull(Pageable pageable);
+
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE GasStation g set g.deletedAt = current_date where g.lastModfeDttm <:lastDate")
+	int deleteOldStations(@Param("lastDate") LocalDateTime lastDate);
 }

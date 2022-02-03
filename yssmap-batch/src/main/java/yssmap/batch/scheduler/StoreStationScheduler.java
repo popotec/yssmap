@@ -19,7 +19,7 @@ public class StoreStationScheduler {
 
 	private static final Logger logger = LoggerFactory.getLogger("file");
 
-	private final Job job;
+	private final Job storeGasStationJob;
 	private final JobLauncher jobLauncher;
 
 	// 1시간 마다 실행
@@ -28,7 +28,7 @@ public class StoreStationScheduler {
 		try {
 			logger.info("fetch gas station job start");
 			jobLauncher.run(
-				job,
+				storeGasStationJob,
 				new JobParametersBuilder()
 					.addString("datetime", LocalDateTime.now().toString())
 					.toJobParameters()  // job parameter 설정

@@ -1,5 +1,6 @@
 package yssmap.main.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,14 +19,13 @@ public class GasStationDto {
 	private String prices;
 	private Double latitude;
 	private Double longitude;
-	private String lastModfeDttm;
+	private LocalDateTime lastModfeDttm;
 
 	public GasStationDto() {
 	}
 
 	public GasStationDto(String stationCode, String name, String address, String telNo, String openingHours,
-		String stocks,
-		String prices, Double latitude, Double longitude, String lastModfeDttm) {
+		String stocks, String prices, Double latitude, Double longitude, LocalDateTime lastModfeDttm) {
 		this.stationCode = stationCode;
 		this.name = name;
 		this.address = address;

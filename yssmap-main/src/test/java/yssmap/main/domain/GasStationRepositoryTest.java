@@ -2,6 +2,7 @@ package yssmap.main.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ class GasStationRepositoryTest {
 		gasStation = new GasStation("K0011530",
 			"용인 수지구", "용인시 수지구 232-3", "031-324-2321",
 			"09:00~18:00", "2500", "1500", 35.46050360,
-			129.36478340, "2021-11-26 20:00:00");
+			129.36478340, LocalDateTime.parse("2021-11-26T20:00:00"));
 	}
 
 	@Test
@@ -74,7 +75,7 @@ class GasStationRepositoryTest {
 		GasStation gasStation2 = new GasStation("K0011531",
 			"용인 수지구2", "용인시 수지구2 232-3", "031-324-2321",
 			"09:00~18:00", "2500", "1500", 35.46050360,
-			129.36478340, "2021-11-26 20:00:00");
+			129.36478340, LocalDateTime.parse("2021-11-26T20:00:00"));
 		gasStationRepository.save(gasStation2);
 
 		//when
@@ -83,5 +84,30 @@ class GasStationRepositoryTest {
 		//then
 		assertThat(gasStations.size()).isEqualTo(1);
 		assertThat(gasStations.get(0)).isEqualTo(gasStation2);
+	}
+
+	@Test
+	@DisplayName("유효하지 않은(오래된) 데이터 삭제일시 업데이트")
+	void deleteOldStations() {
+		//given
+		String string = LocalDateTime.now().toString();
+		System.out.println(string);
+		// GasStation savedGasStation = gasStationRepository.save(gasStation);
+		// GasStation savedGasStation2 = gasStationRepository.save(new GasStation("K0011531",
+		// 	"용인 수지구2", "용인시 수지구2 232-3", "031-324-2321",
+		// 	"09:00~18:00", "2500", "1500", 35.46050360,
+		// 	129.36478340, localDateTime));
+		//
+		// int modifiedCount = gasStationRepository.deleteOldStations(localDateTime);
+		//
+		// //then
+		// assertThat(modifiedCount).isEqualTo(1);
+		//
+		// //when
+		// Optional<GasStation> findGasStation = gasStationRepository.findByStationCodeAndDeletedAtIsNull("K0011530");
+		//
+		// //then
+		// assertThat(findGasStation.isPresent()).isTrue();
+		// assertThat(findGasStation.orElse(null)).isEqualTo(savedGasStation);
 	}
 }

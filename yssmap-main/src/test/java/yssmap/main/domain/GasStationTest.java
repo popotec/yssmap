@@ -1,5 +1,7 @@
 package yssmap.main.domain;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.EntityManager;
 
 import org.assertj.core.api.Assertions;
@@ -27,7 +29,7 @@ class GasStationTest {
 		gasStation = new GasStation("K0011530",
 			"용인 수지구", "용인시 수지구 232-3", "031-324-2321",
 			"09:00~18:00", "2500", "1500", 35.46050360,
-			129.36478340, "2021-11-26 20:00:00");
+			129.36478340, LocalDateTime.parse("2021-11-26T20:00:00"));
 
 	}
 
@@ -56,7 +58,7 @@ class GasStationTest {
 		GasStation updateInfoGasStation = new GasStation("K0011530",
 			updateName, "용인시 수지구 232-3", "031-324-2321",
 			"09:00~18:00", "2500", "1500", 35.46050360,
-			129.36478340, "2021-11-26 20:00:00");
+			129.36478340, LocalDateTime.parse("2021-11-26T20:00:00"));
 		gasStation.update(updateInfoGasStation);
 
 		// then
