@@ -90,24 +90,17 @@ class GasStationRepositoryTest {
 	@DisplayName("유효하지 않은(오래된) 데이터 삭제일시 업데이트")
 	void deleteOldStations() {
 		//given
-		String string = LocalDateTime.now().toString();
-		System.out.println(string);
-		// GasStation savedGasStation = gasStationRepository.save(gasStation);
-		// GasStation savedGasStation2 = gasStationRepository.save(new GasStation("K0011531",
-		// 	"용인 수지구2", "용인시 수지구2 232-3", "031-324-2321",
-		// 	"09:00~18:00", "2500", "1500", 35.46050360,
-		// 	129.36478340, localDateTime));
-		//
-		// int modifiedCount = gasStationRepository.deleteOldStations(localDateTime);
-		//
-		// //then
-		// assertThat(modifiedCount).isEqualTo(1);
-		//
-		// //when
-		// Optional<GasStation> findGasStation = gasStationRepository.findByStationCodeAndDeletedAtIsNull("K0011530");
-		//
-		// //then
-		// assertThat(findGasStation.isPresent()).isTrue();
-		// assertThat(findGasStation.orElse(null)).isEqualTo(savedGasStation);
+		LocalDateTime dateTime =  LocalDateTime.now();
+		gasStationRepository.save(gasStation);
+		gasStationRepository.save(new GasStation("K0011531",
+			"용인 수지구2", "용인시 수지구2 232-3", "031-324-2321",
+			"09:00~18:00", "2500", "1500", 35.46050360,
+			129.36478340, dateTime));
+
+		// whne
+		int modifiedCount = gasStationRepository.deleteOldStations(dateTime);
+
+		//then
+		assertThat(modifiedCount).isEqualTo(1);
 	}
 }

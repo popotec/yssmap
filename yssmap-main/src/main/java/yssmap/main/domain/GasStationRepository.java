@@ -30,6 +30,8 @@ public interface GasStationRepository extends JpaRepository<GasStation, String> 
 	Page<GasStation> findAllByDeletedAtIsNull(Pageable pageable);
 
 	@Modifying(clearAutomatically = true)
-	@Query("UPDATE GasStation g set g.deletedAt = current_date where g.lastModfeDttm <:lastDate")
-	int deleteOldStations(@Param("lastDate") LocalDateTime lastDate);
+	@Query("UPDATE GasStation g "+
+		"SET g.deletedAt = current_timestamp "+
+		"WHERE g.deletedAt is null and g.lastModfeDttm < :lastValidDate")
+	int deleteOldStations(@Param("lastValidDate") LocalDateTime lastValidDate);
 }

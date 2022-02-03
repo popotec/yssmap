@@ -2,7 +2,11 @@ package yssmap.main.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import yssmap.main.domain.GasStation;
 import yssmap.main.dto.MapBound;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,12 +32,12 @@ class GasStationServiceTest extends ServiceTest{
 		gasStation1 = new GasStationDto("K0011530",
 			"용인 수지구", "용인시 수지구 232-3", "031-324-2321",
 			"09:00~18:00", "2500", "1500", 35.46050360,
-			129.36478340, "2021-11-26 20:00:00");
+			129.36478340, LocalDateTime.parse("2021-11-26T20:00:00"));
 
 		gasStation2 = new GasStationDto("K0011531",
 			"서울시 강남구", "서울시 강남구 62-7", "02-3432-3866",
 			"09:00~18:00", "2500", "1500", 36.46050360,
-			129.36478340, "2021-11-26 20:00:00");
+			129.36478340, LocalDateTime.parse("2021-12-01T20:00:00"));
 
 		gasStationService.save(gasStation1);
 		gasStationService.save(gasStation2);
@@ -75,5 +79,18 @@ class GasStationServiceTest extends ServiceTest{
 		assertThat(resultCodes.size()).isEqualTo(2);
 		resultCodes.stream()
 			.forEach(code -> assertThat(expectCodes.contains(code)));
+	}
+
+	@Test
+	void deleteOldStations(){
+		//given
+		LocalDate stdDate = LocalDate.parse("2021-11-30");
+
+		//when
+		gasStationService.deleteOldStations(stdDate,3);
+
+		//then
+		GasStation gasStation = gasStationService.findGasStation(gasStation1.getStationCode());
+		assertThat(gasStation.getDeletedAt()).isNotNull();
 	}
 }

@@ -1,8 +1,13 @@
 package yssmap.main.service;
 
 import yssmap.main.dto.MapBound;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -28,6 +33,10 @@ public class GasStationService {
     @Transactional
     public GasStationDto save(GasStationDto gasStation) {
         return GasStationDto.from(gasStationRepository.save(gasStation.toGasStation()));
+    }
+
+    public GasStation findGasStation(String stationCode){
+        return gasStationRepository.findByStationCode(stationCode).orElseThrow(EntityNotFoundException::new);
     }
 
     public List<GasStationDto> findAllDtos() {
@@ -73,5 +82,14 @@ public class GasStationService {
                 throw new NumberFormatException("좌표는 숫자여야 합니다.");
             }
         }
+    }
+
+    public void deleteOldStations(LocalDate stdDate, int dayBefore){
+        LocalDateTime lastValidDate = stdDate.minusDays(dayBefore).atStartOfDay();
+        gasStationRepository.deleteOldStations(lastValidDate);
+    }
+
+    public void deleteOldStations(int dayBefore){
+        deleteOldStations(LocalDateTime.now().toLocalDate(),dayBefore);
     }
 }

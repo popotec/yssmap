@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
 import yssmap.batch.job.tasklet.DeleteInvalidStationTasklet;
+import yssmap.main.service.GasStationService;
 import yssmap.stationapi.service.GasStationAPIService;
 
 @Configuration
@@ -20,7 +21,7 @@ public class DeleteInvalidStationJobConfiguration {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-	private final GasStationAPIService storeGasStationAPIService;
+	private final GasStationService gasStationService;
 
 	@Bean
 	public Job deleteInvalidStationJob() {
@@ -40,6 +41,6 @@ public class DeleteInvalidStationJobConfiguration {
 	@Bean
 	@StepScope
 	public Tasklet deleteOldStationTasklet(){
-		return new DeleteInvalidStationTasklet(storeGasStationAPIService);
+		return new DeleteInvalidStationTasklet(gasStationService);
 	}
 }

@@ -20,15 +20,33 @@ public class StoreStationScheduler {
 	private static final Logger logger = LoggerFactory.getLogger("file");
 
 	private final Job storeGasStationJob;
+	private final Job deleteInvalidStationJob;
 	private final JobLauncher jobLauncher;
 
 	// 1시간 마다 실행
 	@Scheduled(fixedDelay = 60 *60 * 1000L)
-	public void executeJob () {
+	public void executeStoreGasStationJob () {
 		try {
 			logger.info("fetch gas station job start");
 			jobLauncher.run(
 				storeGasStationJob,
+				new JobParametersBuilder()
+					.addString("datetime", LocalDateTime.now().toString())
+					.toJobParameters()  // job parameter 설정
+			);
+			logger.info("successfully complete job\n\n");
+		} catch (JobExecutionException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
+		}
+	}
+
+	@Scheduled(cron = "1 0 0 * * *")
+	public void executeDeleteOldStationsJob () {
+		try {
+			logger.info("delete old stations start");
+			jobLauncher.run(
+				deleteInvalidStationJob,
 				new JobParametersBuilder()
 					.addString("datetime", LocalDateTime.now().toString())
 					.toJobParameters()  // job parameter 설정
