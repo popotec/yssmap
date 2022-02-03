@@ -3,6 +3,7 @@ package yssmap.main.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -16,6 +17,7 @@ public class GasStation {
 
 	// 주유소 코드
 	@Id
+	@Column(length = 30)
 	private String stationCode;
 
 	// 주유소 이름
