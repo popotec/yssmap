@@ -1,5 +1,8 @@
 package yssmap.stationapi.service;
 
+import static java.lang.Thread.*;
+
+import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import yssmap.main.domain.GasStation;
@@ -39,7 +44,7 @@ public class GasStationAPIService {
 	public static final int INIT_PAGE = 1;
 	public static final int INIT_PER_PAGE = 200;
 
-	private ThreadLocal<ApiFetchResult> apiFetchResult = new ThreadLocal<>();
+	private ThreadLocal<ApiFetchResult> apiFetchResultStore = new ThreadLocal<>();
 
 	@Value("${dataportal.servicekey}")
 	private String serviceKey;
@@ -55,7 +60,7 @@ public class GasStationAPIService {
 	}
 
 	private void initApiFetchResult() {
-		apiFetchResult.set(new ApiFetchResult());
+		apiFetchResultStore.set(new ApiFetchResult());
 	}
 
 	private RestTemplate initRestTemplate(RestTemplateBuilder restTemplateBuilder) {
@@ -75,11 +80,11 @@ public class GasStationAPIService {
 	}
 
 	private void releaseResult() {
-		apiFetchResult.remove();
+		apiFetchResultStore.remove();
 	}
 
 	private void recordFetchResult() {
-		ApiFetchResult apiFetchResult = this.apiFetchResult.get();
+		ApiFetchResult apiFetchResult = apiFetchResultStore.get();
 		logger.info(apiFetchResult.toString());
 	}
 
@@ -104,17 +109,17 @@ public class GasStationAPIService {
 	}
 
 	private void increaseCountOfChange() {
-		ApiFetchResult storedResult = apiFetchResult.get();
+		ApiFetchResult storedResult = apiFetchResultStore.get();
 		storedResult.increaseCountOfChanged();
 	}
 
 	private void increaseCountOfNotChanged() {
-		ApiFetchResult storedResult = apiFetchResult.get();
+		ApiFetchResult storedResult = apiFetchResultStore.get();
 		storedResult.increaseCountOfNotChanged();
 	}
 
 	private void increaseCountOfCreated() {
-		ApiFetchResult storedResult = apiFetchResult.get();
+		ApiFetchResult storedResult = apiFetchResultStore.get();
 		storedResult.increaseCountOfCreated();
 	}
 
@@ -143,7 +148,16 @@ public class GasStationAPIService {
 	private Map requestAPICall(int page, int pageSize) {
 		String requestUrl = getApiPath(page, pageSize);
 		System.out.println(requestUrl);
-		return restTemplate.exchange(requestUrl, HttpMethod.GET, getHeaders(), Map.class).getBody();
+		try {
+			return restTemplate.exchange(requestUrl, HttpMethod.GET, getHeaders(), Map.class).getBody();
+		}catch (ResourceAccessException ex){
+			try {
+				sleep(5000); // 5초 후 재시도
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return restTemplate.exchange(requestUrl, HttpMethod.GET, getHeaders(), Map.class).getBody();
+		}
 	}
 
 	private HttpComponentsClientHttpRequestFactory makeRequestFactory(HttpClient httpClient) {
