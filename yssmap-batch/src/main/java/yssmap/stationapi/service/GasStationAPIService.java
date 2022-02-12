@@ -2,7 +2,6 @@ package yssmap.stationapi.service;
 
 import static java.lang.Thread.*;
 
-import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,23 +33,27 @@ import yssmap.main.domain.GasStationRepository;
 import yssmap.main.dto.GasStationDto;
 import yssmap.stationapi.domain.ApiFetchResult;
 import yssmap.stationapi.domain.ResponseFieldName;
+import yssmap.stationapi.exception.ApiResponseException;
 
 @Service
 @Transactional(readOnly = true)
 public class GasStationAPIService {
 
-	private static final Logger logger = LoggerFactory.getLogger("file");
-	private static final String BASE_REQUEST_URL = "https://api.odcloud.kr/api/uws/v1/inventory";
 	public static final int INIT_PAGE = 1;
 	public static final int INIT_PER_PAGE = 200;
 
-	private ThreadLocal<ApiFetchResult> apiFetchResultStore = new ThreadLocal<>();
-
-	@Value("${dataportal.servicekey}")
-	private String serviceKey;
+	private static final Logger logger = LoggerFactory.getLogger("file");
 
 	private final GasStationRepository gasStationRepository;
 	private final RestTemplate restTemplate;
+
+	private ThreadLocal<ApiFetchResult> apiFetchResultStore = new ThreadLocal<>();
+
+	@Value("${dataportal.url}")
+	private String baseRequestUrl;
+
+	@Value("${dataportal.servicekey}")
+	private String serviceKey;
 
 	@Autowired
 	public GasStationAPIService(GasStationRepository gasStationRepository,
@@ -140,22 +143,35 @@ public class GasStationAPIService {
 		return (int)Math.ceil((double)getTotalCount(pageSize) / pageSize);
 	}
 
-	private int getTotalCount(int pageSize) {
+	protected int getTotalCount(int pageSize) {
 		Map result = requestAPICall(INIT_PAGE, pageSize);
 		return (Integer)result.get("totalCount");
 	}
 
-	private Map requestAPICall(int page, int pageSize) {
+	protected Map requestAPICall(int page, int pageSize) {
 		String requestUrl = getApiPath(page, pageSize);
 		System.out.println(requestUrl);
+		return callRestApi(requestUrl);
+	}
+
+	protected Map callRestApi(String requestUrl) {
 		try {
 			return restTemplate.exchange(requestUrl, HttpMethod.GET, getHeaders(), Map.class).getBody();
-		}catch (ResourceAccessException ex){
+		} catch (HttpClientErrorException ex) {
+			/* RestTemplate은 DefaultResponseErrorHandler를 사용하여 에러를 처리함.
+				DefaultResponseErrorHandler는 4xx, 5xx 에러에 대해 HttpClientErrorException 예외를 발생시킴
+				이 오류는 어떻게 할 수 없으니 로깅 후 다시 오류를 던지자.
+			 */
+			logger.error("요청이 정상적으로 처리되지 못했습니다.\n상태코드 : {} , 응답메세지 : {}", ex.getStatusText(), ex.getMessage());
+			throw new ApiResponseException(ex);
+		} catch (ResourceAccessException ex) {
+			// 타임아웃 오류인 경우 5초 후 재시도한다.
 			try {
 				sleep(5000); // 5초 후 재시도
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			// 한번더 오류나면 그냥 오류 처리
 			return restTemplate.exchange(requestUrl, HttpMethod.GET, getHeaders(), Map.class).getBody();
 		}
 	}
@@ -184,7 +200,7 @@ public class GasStationAPIService {
 
 	private String getApiPath(int page, int pageSize) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(BASE_REQUEST_URL)
+		sb.append(baseRequestUrl)
 			.append("?page=").append(page)
 			.append("&perPage=").append(pageSize)
 			.append("&serviceKey=").append(serviceKey);
