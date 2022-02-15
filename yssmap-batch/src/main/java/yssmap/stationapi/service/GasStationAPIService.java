@@ -28,6 +28,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.extern.slf4j.Slf4j;
 import yssmap.main.domain.GasStation;
 import yssmap.main.domain.GasStationRepository;
 import yssmap.main.dto.GasStationDto;
