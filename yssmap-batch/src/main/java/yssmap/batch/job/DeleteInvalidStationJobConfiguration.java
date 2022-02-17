@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
 import yssmap.batch.job.tasklet.DeleteInvalidStationTasklet;
 import yssmap.main.service.GasStationService;
-import yssmap.stationapi.service.GasStationAPIService;
 
 @Configuration
 @RequiredArgsConstructor

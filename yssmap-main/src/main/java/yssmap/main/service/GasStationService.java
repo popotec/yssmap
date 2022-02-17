@@ -29,8 +29,8 @@ public class GasStationService {
     private final GasStationRepository gasStationRepository;
     private final CachingService cachingService;
 
-    @CacheEvict(value = "station", allEntries = true)
     @Transactional
+    @CacheEvict(value = "station", allEntries = true)
     public GasStationDto save(GasStationDto gasStation) {
         return GasStationDto.from(gasStationRepository.save(gasStation.toGasStation()));
     }
@@ -40,10 +40,7 @@ public class GasStationService {
     }
 
     public List<GasStationDto> findAllDtos() {
-        List<GasStation> stations = cachingService.findAll();
-        return stations.stream()
-            .map(GasStationDto::from)
-            .collect(Collectors.toList());
+        return cachingService.findAllDto();
     }
 
     public List<GasStationDto> findAllDtos(Pageable pageable) {
@@ -54,34 +51,16 @@ public class GasStationService {
     }
 
     public List<GasStationDto> findAllInMapBoundsDto(MapBound mapBound) {
-        List<GasStation> stations = cachingService.findAll();
+        List<GasStationDto> stations = cachingService.findAllDto();
         return filterStationsInBounds(stations, mapBound);
     }
 
-    protected List<GasStationDto> filterStationsInBounds(List<GasStation> stations, MapBound mapBound) {
+    protected List<GasStationDto> filterStationsInBounds(List<GasStationDto> stations, MapBound mapBound) {
         return stations.stream()
             .parallel()
             .filter(
                 gasStation -> mapBound.isCover(gasStation.getLatitude(), gasStation.getLongitude()))
-            .map(GasStationDto::from)
             .collect(Collectors.toList());
-    }
-
-    private void validateBounds(String... bounds) {
-        for (String bound : bounds) {
-            if (bound == null) {
-                throw new IllegalArgumentException("맵 경계값을 포함하여 요청해야합니다.");
-            }
-
-            try {
-                Double position = Double.parseDouble(bound);
-                if (position < 0) {
-                    throw new IllegalArgumentException("경계 좌표는 0 이상이어야 합니다.");
-                }
-            } catch (NumberFormatException ex) {
-                throw new NumberFormatException("좌표는 숫자여야 합니다.");
-            }
-        }
     }
 
     public void deleteOldStations(LocalDate stdDate, int dayBefore){
