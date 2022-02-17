@@ -6,6 +6,6 @@ public class JenkinsTest {
 
 	@Test
 	void test(){
-		System.out.println("jenkins github hook 테스트용 code5");
+		System.out.println("jenkins github hook 테스트용 code6");
 	}
 }
