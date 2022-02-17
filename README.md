@@ -108,3 +108,15 @@ API 호출 정보 : /api/stations/bounds
   - String 타입 -> LocalDateTime (DB에서는 varchar -> datetime)
   - 공공 api에서 데이터를 받아와 넣을때 String을 LocalDateTime 포맷으로 변경
   - 변경 사유 : 최종수정일시로 비교 검색할 때, 데이터의 본질이 날짜형식이므로 임의로 문자열 비교를 하지 않도록 변경
+
+---
+### v업데이트 - 2022.2.17
+- CI/CD 자동화 완료
+  - 관련 수행 내역 참고
+    - [CI-CD 자동화 하기 - <1> Github - Jenkins로 CI 자동화 하기](https://jerry92k.tistory.com/71)
+    - [CI-CD 자동화 하기 - <2> Jenkins CD 자동화 하기](https://jerry92k.tistory.com/72)
+- 화면 하단(footer) 개선 
+  - 카피라이트 연도 수정 
+  - 도네리카노 연동 제거 
+  - 깃허브 링크 연결
+  
