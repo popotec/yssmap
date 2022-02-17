@@ -27,5 +27,4 @@ class StoreGasStationAPIServiceTest {
 		Assertions.assertThatThrownBy(()->gasStationAPIService.callRestApi(requestUrl))
 			.isInstanceOf(ApiResponseException.class);
 	}
-
 }

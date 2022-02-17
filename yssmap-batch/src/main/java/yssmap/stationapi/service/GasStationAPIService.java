@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.HttpClient;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,11 +26,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.extern.slf4j.Slf4j;
-import yssmap.main.domain.GasStation;
-import yssmap.main.domain.GasStationRepository;
 import yssmap.main.dto.GasStationDto;
-import yssmap.stationapi.domain.ApiFetchResult;
 import yssmap.stationapi.domain.ResponseFieldName;
 import yssmap.stationapi.exception.ApiResponseException;
 
@@ -40,15 +34,11 @@ import yssmap.stationapi.exception.ApiResponseException;
 @Transactional(readOnly = true)
 public class GasStationAPIService {
 
+	private static final Logger logger = LoggerFactory.getLogger("file");
 	public static final int INIT_PAGE = 1;
 	public static final int INIT_PER_PAGE = 200;
 
-	private static final Logger logger = LoggerFactory.getLogger("file");
-
-	private final GasStationRepository gasStationRepository;
 	private final RestTemplate restTemplate;
-
-	private ThreadLocal<ApiFetchResult> apiFetchResultStore = new ThreadLocal<>();
 
 	@Value("${dataportal.url}")
 	private String baseRequestUrl;
@@ -57,74 +47,13 @@ public class GasStationAPIService {
 	private String serviceKey;
 
 	@Autowired
-	public GasStationAPIService(GasStationRepository gasStationRepository,
-		RestTemplateBuilder restTemplateBuilder) {
-		this.gasStationRepository = gasStationRepository;
+	public GasStationAPIService(	RestTemplateBuilder restTemplateBuilder) {
 		this.restTemplate = initRestTemplate(restTemplateBuilder);
-	}
-
-	private void initApiFetchResult() {
-		apiFetchResultStore.set(new ApiFetchResult());
 	}
 
 	private RestTemplate initRestTemplate(RestTemplateBuilder restTemplateBuilder) {
 		HttpComponentsClientHttpRequestFactory factory = makeRequestFactory(makeHttpClient());
 		return restTemplateBuilder.requestFactory(() -> factory).build();
-	}
-
-	@Transactional
-	@CacheEvict(value = "station", allEntries = true)
-	public void storeGasStations(List<GasStationDto> gasStations) {
-		initApiFetchResult();
-		for (GasStationDto gasStationDto : gasStations) {
-			storeGasStation(gasStationDto);
-		}
-		recordFetchResult();
-		releaseResult();
-	}
-
-	private void releaseResult() {
-		apiFetchResultStore.remove();
-	}
-
-	private void recordFetchResult() {
-		ApiFetchResult apiFetchResult = apiFetchResultStore.get();
-		logger.info(apiFetchResult.toString());
-	}
-
-	private void storeGasStation(GasStationDto gasStationDto) {
-		GasStation requestGasStation = gasStationDto.toGasStation();
-		Optional<GasStation> findGasStation = gasStationRepository.findByStationCode(
-			gasStationDto.getStationCode());
-
-		if (findGasStation.isEmpty()) {
-			gasStationRepository.save(requestGasStation);
-			increaseCountOfCreated();
-			return;
-		}
-
-		GasStation storedGasStation = findGasStation.get();
-		boolean isChanged = storedGasStation.update(requestGasStation);
-		if (isChanged) {
-			increaseCountOfChange();
-			return;
-		}
-		increaseCountOfNotChanged();
-	}
-
-	private void increaseCountOfChange() {
-		ApiFetchResult storedResult = apiFetchResultStore.get();
-		storedResult.increaseCountOfChanged();
-	}
-
-	private void increaseCountOfNotChanged() {
-		ApiFetchResult storedResult = apiFetchResultStore.get();
-		storedResult.increaseCountOfNotChanged();
-	}
-
-	private void increaseCountOfCreated() {
-		ApiFetchResult storedResult = apiFetchResultStore.get();
-		storedResult.increaseCountOfCreated();
 	}
 
 	public List<GasStationDto> fetchStations(int page) {

@@ -18,6 +18,7 @@ import yssmap.stationapi.service.GasStationAPIService;
 import yssmap.batch.job.chunk.GasStationApiReader;
 import yssmap.batch.job.chunk.GasStationApiWriter;
 import yssmap.main.dto.GasStationDto;
+import yssmap.stationapi.service.GasStationStoreService;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,7 +26,8 @@ public class StoreGasStationJobConfiguration {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-	private final GasStationAPIService storeGasStationAPIService;
+	private final GasStationAPIService gasStationAPIService;
+	private final GasStationStoreService gasStationStoreService;
 
 	@Bean
 	public Job storeGasStationJob() {
@@ -47,12 +49,12 @@ public class StoreGasStationJobConfiguration {
 	@Bean
 	@StepScope
 	public ItemReader<List<GasStationDto>> gasStationApiReader() {
-		return new GasStationApiReader(storeGasStationAPIService);
+		return new GasStationApiReader(gasStationAPIService);
 	}
 
 	@Bean
 	@StepScope
 	public ItemWriter<List<GasStationDto>> gasStationApiWriter() {
-		return new GasStationApiWriter(storeGasStationAPIService);
+		return new GasStationApiWriter(gasStationStoreService);
 	}
 }

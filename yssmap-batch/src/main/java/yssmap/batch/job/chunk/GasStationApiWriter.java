@@ -4,22 +4,20 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
 
-import yssmap.stationapi.service.GasStationAPIService;
 import yssmap.main.dto.GasStationDto;
-
+import yssmap.stationapi.service.GasStationStoreService;
 
 public class GasStationApiWriter implements ItemWriter<List<GasStationDto>> {
 
-	private final GasStationAPIService storeGasStationAPIService;
+	private final GasStationStoreService gasStationService;
 
-
-	public GasStationApiWriter(GasStationAPIService storeGasStationAPIService) {
-		this.storeGasStationAPIService = storeGasStationAPIService;
+	public GasStationApiWriter(GasStationStoreService gasStationService) {
+		this.gasStationService = gasStationService;
 	}
 
 	@Override
 	public void write(List<? extends List<GasStationDto>> items) {
 		items.stream()
-			.forEach(gasStations -> storeGasStationAPIService.storeGasStations(gasStations));
+			.forEach(gasStations -> gasStationService.storeGasStations(gasStations));
 	}
 }
