@@ -120,3 +120,7 @@ API 호출 정보 : /api/stations/bounds
   - 도네리카노 연동 제거 
   - 깃허브 링크 연결
   
+---
+### v업데이트 - 2022.2.19
+- 정적 리소스 캐싱 적용
+  - 관련 이슈 참고 : https://github.com/jerry92k/yssmap/issues/9
