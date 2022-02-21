@@ -124,3 +124,10 @@ API 호출 정보 : /api/stations/bounds
 ### v업데이트 - 2022.2.19
 - 정적 리소스 캐싱 적용
   - 관련 이슈 참고 : https://github.com/jerry92k/yssmap/issues/9
+
+---
+### v업데이트 - 2022.2.21
+- gzip 압축 적용
+  - 관련 이슈 참고 : https://github.com/jerry92k/yssmap/issues/19
+
+ 
