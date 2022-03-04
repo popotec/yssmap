@@ -130,4 +130,7 @@ API 호출 정보 : /api/stations/bounds
 - gzip 압축 적용
   - 관련 이슈 참고 : https://github.com/jerry92k/yssmap/issues/19
 
- 
+---
+### v업데이트 - 2022.3.4
+- SSL 인증서 갱신
+  - 관련 이슈 참고 : https://github.com/jerry92k/yssmap/issues/20
